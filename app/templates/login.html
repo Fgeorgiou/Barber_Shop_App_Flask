@@ -1,0 +1,95 @@
+{% extends 'base_template.html' %}
+{% block content %}
+    
+//define variables ans set to empty values
+$emailErr = $pwdErr1 = "";
+$email = $pwd = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    
+    //email validation
+    if(empty($_POST["email"])){
+        $emailErr= "E-mail is required";
+    } 
+    else{
+        $email = test_input($_POST["email"]);
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $emailErr = "Invalid email format"; 
+        }
+    }
+    
+    //pwd validation
+    if(empty($_POST["pwd"])){
+        $pwdErr1 = "password is required";
+    } 
+    else{
+        $pwd = test_input($_POST["pwd"]);
+        if(!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/', $pwd)) {
+            $pwdErr1 = "the password does not meet the requirements!";
+        }
+    }
+
+    //query that will seatch the DB for the user, authenticating him and making session variables with the reuired information
+    $sql = "SELECT * FROM users WHERE email = '$email' AND password = '$pwd' ";
+    $result = mysqli_query($conn, $sql);
+    if (!$row = mysqli_fetch_assoc($result)) {
+        $pwdErr1 = '<div class="alert alert-danger text-centered">' . 
+                        '<center>Invalid Email or Password. Please Try Again.<center>' .
+                    '</div>';
+    } else {
+        $_SESSION['account_type'] = $row['is_admin'];
+        $_SESSION['lname'] = $row['last_name'];
+        $_SESSION['userid'] = $row['userid'];
+        $_SESSION['userEmail'] = $row['email'];
+        $_SESSION['userTelephone'] = $row['telephone'];
+        $_SESSION['userPassword'] = $row['password'];
+        $_SESSION['userSmoking'] = $row['is_smoker'];
+        if($_SESSION['account_type'] === "admin"){
+            $_SESSION['username'] = "Admin." . $row['first_name'];
+            header("Location: Admin_Interface.php");
+            }else{
+                if($_SESSION['account_type'] == "simpleacc"){
+                    $_SESSION['username'] = $row['first_name'];
+                    header("Location: Index.php");
+            }
+        }
+    }    
+}
+<!-- The Login page will be responsible for authenticating properly the user and later redirecting him to the corresponding page with his/her privileges-->
+<div class="container-default"> 
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4 hidden-xs hidden-sm"><a href='index.html'><img src="fonts/papa_felipes.png"  class="img-responsive"></a></div>
+    <div class="col-md-4 "></div>
+</div>
+
+
+<!--Form--> 
+<div class="row">    
+    <div class="col-sm-4"></div>
+    <div class="col-sm-4">
+        <div class="wrapper2">
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
+            <div class="form-group">
+                <label for="email"><b>Email address:</b></label>
+                <input type="email" class="form-control" name="email" placeholder="Enter your email here...">
+                <span class="error"><?php echo $emailErr;?></span>
+            </div>
+            <div class="form-group">
+                <label for="pwd"><b>Password:</b></label>
+                <input type="password" class="form-control" name="pwd" placeholder="Enter your password here...">
+                <span class="error"><?php echo $pwdErr1;?></span>
+            </div>
+            <div>
+                <label>Not a member?<a href="Register.php">Register Here!</a></label>
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+        </form>                                                                                                                          
+    </div>
+    <div class="col-sm-4"></div>
+</div>
+          
+</div>
+{%include 'footer2.html'%}
+{%endblock%}
+
