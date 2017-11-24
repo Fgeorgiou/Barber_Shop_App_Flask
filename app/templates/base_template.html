@@ -1,0 +1,13 @@
+<!-- The landing page of the application.-->
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		{%include 'header.html'%}
+	</head>
+	<body class="img-responsive">
+		<div class="brand">Welcome to {{company_name.name}}® Barbery!!</div>
+        <div class="address-bar">Skra 1 | Cholargos, Athens 15562 | 123.456.7890</div>
+		{%include 'nav_bar.html'%}
+		{% block content %}{% endblock %}
+	</body>
+</html>

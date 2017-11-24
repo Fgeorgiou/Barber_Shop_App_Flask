@@ -1,0 +1,186 @@
+{% extends 'base_template.html' %}
+{% block content %}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    //fname validation
+    if(empty($_POST["fname"])){
+        $fnameErr= "First name is required";
+    } 
+    else {
+        $fname = test_input($_POST["fname"]);
+        if (!preg_match("/^[a-zA-Z ]*$/",$fname)) {
+            $fnameErr = "Only letters and white space allowed"; 
+         }
+    }
+    
+    //lname validation
+    if(empty($_POST["lname"])){
+        $lnameErr= "Last name is required";
+    } else {
+        $lname = test_input($_POST["lname"]); 
+        if (!preg_match("/^[a-zA-Z ]*$/",$lname)) {
+            $lnameErr = "Only letters and white space allowed"; 
+        }
+    }
+    
+
+    //email validation
+    if(empty($_POST["email"])){
+        $emailErr= "E-mail is required";
+    } 
+    else{
+        $email = test_input($_POST["email"]);
+        $sqlemail = "SELECT * FROM users WHERE email = '$email'";
+        $resultemail = mysqli_query($conn, $sqlemail);
+        if ($row = mysqli_fetch_assoc($resultemail)) {
+            $emailErr = "That email address is already in use. Sorry.";
+        }
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $emailErr = "Invalid email format"; 
+        }
+    }
+
+        //telephone validation
+    if(empty($_POST["telephone"])){
+        $TeleErr= "Telephone is required";
+    } 
+    
+    else{
+        $telephone = test_input($_POST["telephone"]);
+        if (!preg_match('/^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/',$telephone)) { 
+            $TeleErr = "Invalid telephone format (invalid characters)";      
+        } else if(strlen($telephone) < 10)
+            {
+                $TeleErr = "Invalid telephone format (telephone too short)";
+            }
+        }
+    
+    //pwd validation
+    if(empty($_POST["pwd1"]) || empty($_POST["pwd2"])){
+        $pwdErr1 = "password is required";
+    } 
+    elseif($_POST["pwd1"] !== $_POST["pwd2"]){
+        $pwdErr2 = "passwords do not match!";
+    }
+    else{
+        $pwd = test_input($_POST["pwd1"]);
+        if(!preg_match('/^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/', $pwd)) {
+        $pwdErr1 = "the password does not meet the requirements!";
+        }
+    }
+    
+    //gender validation
+    if(empty($_POST["gender"])){
+        $genderErr = " ";
+        $gender = "Other";
+    } 
+    else {
+  $gender = test_input($_POST["gender"]);
+    }
+    
+    //smokers validation
+    if(empty($_POST["smoking"])){
+        $smokingErr = " ";
+        $smoking = "Unspecified";
+    }
+    else {
+        $smoking = test_input($_POST["smoking"]);
+    }
+    
+    if($fnameErr === " " && $lnameErr === " " && $emailErr === " " && $TeleErr === " " && $genderErr === " " && $pwdErr1 === " "  && $pwdErr2 === " " && $smokingErr ===  " "){
+        $sql = "INSERT INTO users (first_name, last_name, email, telephone, password, gender, is_smoker, is_admin)
+            VALUES ('$fname', '$lname', '$email', '$telephone', '$pwd', '$gender', '$smoking', 'simpleacc')";
+        $result = mysqli_query($conn,$sql); 
+        
+         if ($result === TRUE) {
+                $SucMessage = "Your Account was created successfully. Welcome, $fname $lname";
+            }   
+        } else {    
+            $FailMessage = "The information you inserted have some mistake. Please retry"; 
+        }
+        $conn->close();    
+}
+
+//function for filtering data from extra whitespaces, slashes and translating html special characters to harmless text
+function test_input($data) {
+  $data = trim($data);
+  $data = stripslashes($data);
+  $data = htmlspecialchars($data);
+  return $data;
+}
+
+
+?>
+
+<!--The page that will allow visitors to becoe full-fledged users-->
+<!--A number of validation are used to make sure that the users are not actually trying too hard to mess with the application-->
+    <!--Form 1.0 --> 
+    <div class="row">
+        
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <div class="wrapper2">
+            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                    <?php
+                    if(isset($SucMessage)){
+                        echo '<div class="alert alert-success text-centered">' . 
+                            $SucMessage .
+                        '</div>';
+                    }
+                    if(isset($FailMessage)){
+                        echo '<div class="alert alert-danger text-centered">' . 
+                            $FailMessage .
+                        '</div>';
+                    }
+                    ?>
+                <div class="form-group">
+                    <label for="fname"><b>First Name:</b></label><span class="error">*</span>
+                    <input type="text" name="fname" class="form-control" placeholder="Must contain only letters and whitespaces">
+                    <span class="error"><?php echo $fnameErr;?></span>
+                </div>
+                <div class="form-group">
+                    <label for="lname"><b>Last Name:</b></label><span class="error">*</span>
+                    <input type="text" name="lname" class="form-control" placeholder="Must contain only letters and whitespaces">
+                    <span class="error"><?php echo $lnameErr;?></span>
+                </div>
+                <div class="form-group">
+                    <label for="email"><b>Email address:</b></label><span class="error">*</span>
+                    <input type="text" name="email" class="form-control"placeholder="Format: *******@<subdomain name>.<domain> Example: Fgeorgiou@gmail.com">
+                    <span class="error"><?php echo $emailErr;?></span>
+                </div>
+                <div class="form-group">
+                    <label for="telephone"><b>Telephone:</b></label><span class="error">*</span>
+                    <input type="text" name="telephone" class="form-control" placeholder="Must contain only numbers(10)">
+                    <span class="error"><?php echo $TeleErr;?></span>
+                </div>
+                <div class="form-group">
+                    <label for="pwd"><b>Password:</b></label><span class="error">*</span>
+                    <input type="password" name="pwd1" class="form-control" placeholder="Must contain 1 capital letter, 1 number & at least 8 characters">
+                    <span class="error"><?php echo $pwdErr1;?></span>
+                </div>
+                <div class="form-group">
+                    <label for="pwd"><b>Repeat Password:</b></label><span class="error">* <span class="glyphicon glyphicon-question-sign"><a data-toggle="tooltip" title="Must contain 1 capital letter, 1 number & at least 8 characters"></a></span></span>
+                    <input type="password" name="pwd2" class="form-control" placeholder="Must contain 1 capital letter, 1 number & at least 8 characters">
+                    <span class="error"><?php echo $pwdErr2;?></span>
+                </div>
+                <div class="form-group">
+                    <label for="gender"><b>Gender:</b></label>
+                    <label class="radio-inline"><input type="radio" name="gender" <?php if (isset($gender) && $gender=="Male") echo "checked";?>value="Male">Male</label>
+                    <label class="radio-inline"><input type="radio" name="gender" <?php if (isset($gender) && $gender=="Female") echo "checked";?>value="Female">Female</label>
+                    <label class="radio-inline"><input type="radio" name="gender" <?php if (isset($gender) && $gender=="Other") echo "checked";?>value="Other">Other</label>
+                </div>
+                <div class="form-group">
+                    <label for="smoker"><b>Smoking:</b></label>
+                    <label class="radio-inline"><input type="radio" name="smoking" value="Smoker">Smoker</label>
+                    <label class="radio-inline"><input type="radio" name="smoking" value="Non-smoker">Non-smoker</label> 
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-4"></div>
+{%include 'footer.html'%}
+{%endblock%}
+
+
+
