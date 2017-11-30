@@ -2,47 +2,79 @@
     Created on : Jan 27, 2017, 12:47:28 PM
     Author     : Filippos
 */
+    /* Aisha font reference: http://www.revolge.com/product/aisha-script/ */
+    @font-face { font-family: Aisha-script; src: url('/static/images_n_fonts/fonts/MJ_Aisha_FS/Aisha Script.ttf'); }
 
     /*default CSS properties. Applies to elements independently of screensize*/
     /*Greeting message*/
     .brand,
     .address-bar{
-    font-family: "Verdana", Times, serif;
+    font-family: "Aisha-script", "Verdana", Times, serif;
     text-align: center;
     text-transform: capitalize;
     font-size: 25px;
     font-weight: bolder;
-    color: rgba(0, 0, 0, 0.7);
+    color: #4f351c;
     }
     /*----------------------------------------*/   
 
+    /*flash messages and animations*/
+    @-webkit-keyframes fade {
+        0%  {opacity: 0;}
+        20%  {opacity: 1;}
+        80%  {opacity:1;}
+        100% {opacity: 0; display: none;}
+    }
+    @-o-keyframes fade {
+        0%  {opacity: 0;}
+        20%  {opacity: 1;}
+        80%  {opacity:1;}
+        100% {opacity: 0; display: none;}
+    }
+    @-moz-keyframes fade {
+        0%  {opacity: 0;}
+        20%  {opacity: 1;}
+        80%  {opacity:1;}
+        100% {opacity: 0; display: none;}
+    }
 
+    @keyframes fade {
+        0%  {opacity: 0; right: -100%;}
+        20%  {opacity: 1; right: 0;}
+        80%  {opacity:1; right: 0;}
+        100% {opacity: 0; right: -100%; display: none;}
+    }
 
+    .flash{
+        width: 30em;
+        height: 4em;
+        display: inline-block;
+        position: fixed;
+        top: 0;
+        bottom: -30%;
+        left: 0;
+        right: 0;
+        margin: auto;
+        z-index: 20;
+        text-align: center;        
+        animation: fade 6s forwards;
+    }
 
     /*media query for MOBILES(under 639 pixels)*/
     /*----------------------------------------*/
     @media only screen and (max-width : 639px){
-
-        /*start of menupage css*/
-        #menustyle{
-            border : 2px solid #73AD21;
-            border-style: none;
-            margin-top : 50px;
-            padding : 2px;   
-        }   
-        /*end of menupage css*/
-        /*----------------------------------------*/
-
         /* Ribbons reference: http://www.cssportal.com/css-ribbon-generator/*/
         /*----------------------------------------*/
         .box {
           width: 200px; height: 300px;
           position: relative;
-          border: 1px solid #BBB;
-          background: #C5E3BF;
+          float: none;
+          margin: 0 auto;
+          border: 2px solid #BBB;
+          background: #dac292;
           border-style: solid;
           border-width: 2px;
-          border-color: #006400;
+          border-color: #4f351c;
           border-radius: 10px;
         }
         .ribbon {
@@ -93,7 +125,7 @@
         /*----------------------------------------*/
         .banner-hdr{
             font-size: 20px;
-            color: #006400;
+            color: #4f351c;
             text-transform: uppercase;
             text-align: center;
             font-weight: bold;
@@ -101,11 +133,10 @@
 
         .banner-bdy{
             font-size: 20px;
-            color: #990000;
+            color: #4f351c;
             text-transform: capitalize;
             text-align: center;
         }
-        
         /*he for banners*/
         /* Reference: https://css-tricks.com/examples/hrs/*/
         hr {
@@ -122,7 +153,7 @@
         .wrapper{
             width: 95%;
             height: 50%;
-            background-color: rgba(255,255,255,0.5);
+            background-color: rgba(255,255,255,0.8);
             border-radius: 25px;
             font-family: 'Georgia', Arial, Verdana;
             font-size: 20px;
@@ -187,21 +218,21 @@
         
         /*hr for menu decoration*/
         hr.formenu {
-	border-top: 1px solid #8c8b8b;
-	text-align: center;
+	       border-top: 1px solid #8c8b8b;
+	       text-align: center;
         }
         hr.formenu:after {
-	content: '§';
-	display: inline-block;
-	position: relative;
-	top: -14px;
-	padding: 0 10px;
-	background: #f0f0f0;
-	color: #8c8b8b;
-	font-size: 18px;
-	-webkit-transform: rotate(60deg);
-	-moz-transform: rotate(60deg);
-	transform: rotate(60deg);
+        	content: '§';
+        	display: inline-block;
+        	position: relative;
+        	top: -14px;
+        	padding: 0 10px;
+        	background: #f0f0f0;
+        	color: #8c8b8b;
+        	font-size: 18px;
+        	-webkit-transform: rotate(60deg);
+        	-moz-transform: rotate(60deg);
+        	transform: rotate(60deg);
         }
         /*----------------------------------------*/
 
@@ -228,17 +259,6 @@
     /*media query for TABLETS(over 768 pixels and under 1024 pixels)*/
     @media only screen and (min-width : 640px) and (max-width: 1023px){
         /*----------------------------------------*/
-        /*start ofmenupage css*/
-        #menustyle{
-            border : 2px solid #73AD21;
-            border-style: none;
-            margin-top : 50px;
-            padding : 2px;   
-        }   
-        /*end of menupage css*/
-        /*----------------------------------------*/
-
-        /*----------------------------------------*/
         /*navbar css*/
         .navbar-nav > li > a{
             padding-left: 20px;
@@ -264,7 +284,7 @@
         /*----------------------------------------*/
         .banner-hdr{
             font-size: 20px;
-            color: #006400;
+            color: #4f351c;
             text-transform: uppercase;
             text-align: center;
             font-weight: bold;
@@ -272,7 +292,7 @@
 
         .banner-bdy{
             font-size: 20px;
-            color: #990000;
+            color: #4f351c;
             text-transform: capitalize;
             text-align: center;
         }
@@ -294,7 +314,7 @@
         .wrapper{
             width: 95%;
             height: 50%;
-            background-color: rgba(255,255,255,0.5);
+            background-color: rgba(255,255,255,0.8);
             border-radius: 25px;
             font-family: 'Georgia', Arial, Verdana;
             font-size: 20px;
@@ -360,21 +380,21 @@
         
         /*hr for menu decoration*/
         hr.formenu {
-	border-top: 1px solid #8c8b8b;
-	text-align: center;
+        	border-top: 1px solid #8c8b8b;
+        	text-align: center;
         }
         hr.formenu:after {
-	content: '§';
-	display: inline-block;
-	position: relative;
-	top: -14px;
-	padding: 0 10px;
-	background: #f0f0f0;
-	color: #8c8b8b;
-	font-size: 18px;
-	-webkit-transform: rotate(60deg);
-	-moz-transform: rotate(60deg);
-	transform: rotate(60deg);
+        	content: '§';
+        	display: inline-block;
+        	position: relative;
+        	top: -14px;
+        	padding: 0 10px;
+        	background: #f0f0f0;
+        	color: #8c8b8b;
+        	font-size: 18px;
+        	-webkit-transform: rotate(60deg);
+        	-moz-transform: rotate(60deg);
+        	transform: rotate(60deg);
         }
         /*----------------------------------------*/
         
@@ -398,17 +418,6 @@
     }
     /*media query for DESKTOPS(over 1024 pixels)*/
     @media only screen and (min-width : 1024px){
-        /*----------------------------------------*/
-        /*start ofmenupage css*/
-        #menustyle{
-            border : 2px solid #73AD21;
-            border-style: none;
-            margin-top : 50px;
-            padding : 2px;   
-        }   
-        /*end of menupage css*/
-        /*----------------------------------------*/
-
         /*----------------------------------------*/
         /*navbar css*/
         .navbar-nav > li > a{
@@ -443,11 +452,11 @@
         .box {
           width: 200px; height: 300px;
           position: relative;
-          border: 1px solid #BBB;
-          background: #C5E3BF;
+          border: 2px solid #BBB;
+          background: #dac292;
           border-style: solid;
           border-width: 2px;
-          border-color: #006400;
+          border-color: #4f351c;
           border-radius: 10px;
         }
         .ribbon {
@@ -498,7 +507,7 @@
         /*----------------------------------------*/
         .banner-hdr{
             font-size: 20px;
-            color: #006400;
+            color: #4f351c;
             text-transform: uppercase;
             text-align: center;
             font-weight: bold;
@@ -506,7 +515,7 @@
 
         .banner-bdy{
             font-size: 20px;
-            color: #990000;
+            color: #4f351c;
             text-transform: capitalize;
             text-align: center;
         }
@@ -526,7 +535,7 @@
         .wrapper{
             width: 95%;
             height: 50%;
-            background-color: rgba(255,255,255,0.5);
+            background-color: rgba(255,255,255,0.8);
             border-radius: 25px;
             font-family: 'Georgia', Arial, Verdana;
             font-size: 20px;
@@ -627,7 +636,7 @@
     }
 
     @media only screen and (min-width : 1600px){
-              /*navbar css*/
+        /*navbar css*/
         .navbar-nav > li > a{
             padding-left: 200px;
             font-size: 25px;
@@ -653,7 +662,7 @@
         .wrapper{
             width: 95%;
             height: 50%;
-            background-color: rgba(255,255,255,0.5);
+            background-color: rgba(255,255,255,0.8);
             border-radius: 25px;
             font-family: 'Georgia', Arial, Verdana;
             font-size: 20px;

@@ -1,21 +1,4 @@
-<?php
-//session start
-session_start();
-//DB connection
-include '../includes/connection.php';
 
-//check for open session else redirect
-if(!isset($_SESSION['account_type'])){
-    header("Location: Index.php");
-}elseif(!isset($_POST['visitdate']) || !isset($_POST['visittime']) || !isset($_POST['personsoptions']) || !isset($_POST['smokers'])){
-    header("Location: ReservationsTab.php");
-}
-//check for open session else redirect
-if(!isset($_SESSION['account_type'])){
-    header("Location: Index.php");
-}
-
-?>
 
 <!-- This is the page that will inform the user that he succesfully changed a piece of personal information-->
 <!DOCTYPE HTML>

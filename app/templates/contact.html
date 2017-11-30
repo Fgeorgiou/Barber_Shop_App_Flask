@@ -2,7 +2,7 @@
 {% block content %}
 
 <!-- Google Maps Location --> 
-<div class="container-fluid wrapper3" style="margin-top: 10%;margin-bottom: 5%; height: 70%;">
+<div class="container-fluid wrapper3" style="height: 80%;">
     <div class="col-md-4">
     <strong>You Will Find Us Here:</strong><br><br><br>
     <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3739.079002401808!2d23.804242129917718!3d37.99630539500899!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14a198358d7aa33b%3A0x3cd2077b0e233572!2zzqPOus-BzrEgMSwgzqfOv867zrHPgc6zz4zPgiAxNTUgNjI!5e0!3m2!1sel!2sgr!4v1511443039196" 
@@ -14,11 +14,7 @@
 
     <!--Start of contact form--> 
     <div class="col-md-4">
-        <strong>We Want To Hear From You.<br>Give Us A Comment, Rating or Advice to Get Better!</strong><br><br>
-
-        {% for message in get_flashed_messages() %}
-            <div class="flash">{{ message }}</div>
-        {% endfor %}
+        <strong>We Want To Hear Your Opinion.<br>Send Us Your Impressions And Ideas!</strong><br><br>
 
         <form class="form" action="{{ url_for('contact') }}" method="post">
                 {{ form.hidden_tag() }}
@@ -41,24 +37,28 @@
 
     <!-- Working Days/Hours-->
     <div class="col-md-4" style="text-align: center;">
-    <strong>Store Hours</strong><br><br><br><br>
-    
-    <b><em>Mondays - Thursdays</em><br>
-    11:00am - 22:00pm<br><br>
-    
-    <em>Fridays - Saturdays</em><br>
-    11:00am - 23:00pm<br><br>        
-    
-    <em>Sundays</em><br>
-    11:00am - 00:00am</b><br><br>
-    
-    
-    <?php include 'includes/Store_Hours.php';?>   
-    </div>
-    
+        <strong style="font-size: 24px;">Store Hours</strong><br><br><br>
+        
+        <b><em><u>Monday - Tuesday</u></em></b><br>
+        8:00am - 14:00pm & 16:00pm - 21:00pm<br><br>
+        
+        <b><em><u>Wednesday</u></em></b><br>
+        8:00am - 14:30pm<br><br>        
+        
+        <b><em><u>Thursday - Friday</u></em></b><br>
+        8:00am - 14:00pm & 16:00pm - 21:00pm<br><br>
 
-      
+        <b><em><u>Weekends</u></em></b><br>
+        Closed</b><br><br>
+    </div>      
 </div>
+
+{% for message in get_flashed_messages() %}
+    <div class="alert alert-danger flash">
+        {{message}}
+    </div>
+{% endfor %}
+
 <!--End of contact form-->  
-{%include 'footer.html'%}
+{%include 'footer2.html'%}
 {%endblock%}
