@@ -60,7 +60,7 @@ def contact():
 @app.route('/appointments')
 def appointments():
     return render_template("appointments.html",
-                           title='Contact',
+                           title='Appointments',
                            company_name=company_name,
                            year=year)
 

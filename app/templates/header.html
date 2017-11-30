@@ -3,7 +3,7 @@
         </title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <!-- Bootstrap link to CSS & JavaScript -->
+        <!-- Bootstrap link to CSS & JavaScript CDN-->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -11,12 +11,22 @@
         <link rel="stylesheet" href="/static/css/custom.css" type="text/css">
         <script src="/static/js & jquery/myScripts.js"></script>
         <script src="/static/js & jquery/jquery.js"></script>
+        <!--JQuery UI Datepicker Reference:https://jqueryui.com/datepicker/ -->
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="/resources/demos/style.css">
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script>
+            $( function() {
+                $( "#datepicker" ).datepicker();
+            });
+        </script>
         <!-- Background styling-->
         <style>
             .error {color: #FF0000;}
             
             body {
-            background-image:    url(/static/fonts/bg4.jpg);
+            background-image:    url(/static/images_n_fonts/bg4.jpg);
             background-attachment: fixed;
             }
         </style>
