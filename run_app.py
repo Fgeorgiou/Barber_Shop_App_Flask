@@ -1,5 +1,8 @@
 import os
-from app import app
+from app import create_app
+
+app = create_app()
+#app.app_context().push()
 
 if __name__ == '__main__':
     host = os.environ.get('IP', '127.0.0.1')

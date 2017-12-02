@@ -1,0 +1,74 @@
+{% extends 'base_template.html' %}
+{% block content %}
+
+<!--The page that will allow visitors to becoe full-fledged users-->
+<!--A number of validation are used to make sure that the users are not actually trying too hard to mess with the application-->
+    <!-- Form --> 
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <div class="wrapper2">
+                <form action="{{ url_for('auth.register') }}" method="post">
+                    {{ form.hidden_tag() }}
+
+                    <div class="form-group">
+                        <label><b>{{ form.first_name.label }}</b></label>
+                        {{ form.first_name(class="form-control", placeholder="Must contain only letters and whitespaces") }}
+                    </div>
+                    <div class="form-group">
+                        <label><b>{{ form.last_name.label }}</b></label>
+                        {{ form.last_name(class="form-control", placeholder="Must contain only letters and whitespaces") }}
+                    </div>
+                    <div class="form-group">
+                        <label><b>{{ form.birth_date.label }}</b></label>
+                        {{ form.birth_date(class="form-control", id="datepicker", placeholder="Click to drop the calendar") }}
+                    </div>
+                    <div class="form-group">
+                        <label>{{ form.email.label }}<b></b></label>
+                        {{ form.email(class="form-control", type="email", placeholder="Enter your email here...") }}
+                    </div>
+                    <div class="form-group">
+                        <label><b>{{ form.telephone.label }}</b></label>
+                        {{ form.telephone(class="form-control", placeholder="Must contain only numbers(10)") }}
+                    </div>
+                    <div class="form-group">
+                        <label><b>{{ form.password.label }}</b></label>
+                        {{ form.password(class="form-control", type="password", placeholder="Must contain 1 capital letter, 1 number & at least 8 characters") }}
+                    </div>
+                    <div class="form-group">
+                        <label><b>{{ form.confirm_password.label }}</b></label>
+                        {{ form.confirm_password(class="form-control", type="password", placeholder="Repeat your password") }}
+                    </div>
+                    {{ form.submit(class="btn btn-default")}}
+                </form>
+            </div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+
+<!-- This is the Jinja template using WTForms to determine if the action was successful or not and adapt the layout of the response respectively-->
+{% with successes = get_flashed_messages(category_filter=["info"]) %}
+    {% if successes %}
+        {% for message in successes %}
+            <div class="alert alert-success flash">
+                {{message}}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+{% with errors = get_flashed_messages(category_filter=["error"]) %}
+    {% if errors %}
+        {% for message in errors %}
+            <div class="alert alert-danger flash">
+                {{message}}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+{%include 'footer2.html'%}
+{%endblock%}
+
+
+

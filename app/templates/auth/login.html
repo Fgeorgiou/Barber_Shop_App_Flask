@@ -1,0 +1,61 @@
+{% extends 'base_template.html' %}
+{% block content %}
+
+<!-- This is the Jinja template using WTForms to determine if the action was successful or not and adapt the layout of the response respectively-->
+{% with successes = get_flashed_messages(category_filter=["info"]) %}
+    {% if successes %}
+        {% for message in successes %}
+            <div class="alert alert-success flash">
+                {{message}}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+{% with errors = get_flashed_messages(category_filter=["error"]) %}
+    {% if errors %}
+        {% for message in errors %}
+            <div class="alert alert-danger flash">
+                {{message}}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<!-- The Login page will be responsible for authenticating properly the user and later redirecting him to the corresponding page with his/her privileges-->
+<div class="container-default"> 
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4 hidden-xs hidden-sm"><a href='index.html'><img src="fonts/papa_felipes.png"  class="img-responsive"></a></div>
+    <div class="col-md-4 "></div>
+</div>
+
+<!--Form--> 
+<div class="row">    
+    <div class="col-sm-4"></div>
+    <div class="col-sm-4">
+        <div class="wrapper2">
+        <form action="{{ url_for('auth.login') }}" method="post">
+            {{ form.hidden_tag() }}
+
+            <div class="form-group">
+                <label>{{ form.email.label }}<b></b></label>
+                {{ form.email(class="form-control", type="email", placeholder="Enter your email here...") }}
+            </div>
+            <div class="form-group">
+                <label><b>{{ form.password.label }}</b></label>
+                {{ form.password(class="form-control", type="password", placeholder="Enter your password here...") }}
+            </div>
+            <div>
+                <label>Not a member?<a href="{{ url_for('auth.register') }}">Register Here!</a></label>
+            </div>
+            {{ form.submit(class="btn btn-default")}}
+        </form>                                                                                                                          
+    </div>
+    <div class="col-sm-4"></div>
+</div>
+          
+</div>
+{%include 'footer2.html'%}
+{%endblock%}
+

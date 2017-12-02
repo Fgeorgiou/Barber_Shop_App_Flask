@@ -8,23 +8,29 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>                         
                     </button>
-                    <a class="navbar-brand hidden-lg hidden-md" href="index"><span class="glyphicon glyphicon-home"></span></a>
-                    <a class="navbar-brand hidden-sm hidden-xs" href="index"><span id="logo" style="font-family: Aisha-script;color:#4f351c;">{{company_name['name']}}</span></a>
+                    <a class="navbar-brand hidden-lg hidden-md" href="{{ url_for('home.index') }}"><span class="glyphicon glyphicon-home"></span></a>
+                    <a class="navbar-brand hidden-sm hidden-xs" href="{{ url_for('home.index') }}"><span id="logo" style="font-family: Aisha-script;color:#4f351c;">{{company_name['name']}}</span></a>
                 </div>
                 <div class="collapse navbar-collapse" id="myNavbar">
                     <ul class="nav navbar-nav">
-                        <li><a href="appointments">Appointments</a></li>
-                        <li><a href="contact">Contact</a></li>
-                        <li><a href="about_us">About Us</a></li>
+                        <li><a href="#">Appointments</a></li>
+                        <li><a href="{{ url_for('home.contact') }}">Contact</a></li>
+                        <li><a href="{{ url_for('home.about_us') }}">About Us</a></li>
                     </ul>   
                     <ul class="nav navbar-nav navbar-right navbar-collapse" style="font-size:calc(80% + 1vw); position: relative; top:2%;">
                         <div class="dropdown">
-                            <span class="glyphicon glyphicon-cog dropdown-toggle" data-toggle="dropdown">Options</span>
+                            <span class="glyphicon glyphicon-cog dropdown-toggle" data-toggle="dropdown">{%if current_user.is_authenticated %} Hi,{{current_user.first_name}} {% else %}
+                            Options{% endif %}</span>
                             <span class="caret"></span>
                         <ul class="dropdown-menu">
-                            <li><a href="register"><span class="glyphicon glyphicon-user">Register</span></a></li>
-                            <li><a href="admin_interface"><span class="glyphicon glyphicon-king"></span> Admin Interface</a></li>
-                            <li><a href="login"><span class="glyphicon glyphicon-log-in">Login</span></a></li>
+                            {% if current_user.is_authenticated %}
+                            <li><a href="{{ url_for('home.my_account') }}"><span class="glyphicon glyphicon-user"></span> MyAccount</a></li>
+                            <li><a href="#"><span class="glyphicon glyphicon-king"></span> Admin Interface</a></li>
+                            <li><a href="{{ url_for('auth.logout') }}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+                            {% else %}
+                            <li><a href="{{ url_for('auth.register') }}"><span class="glyphicon glyphicon-user"></span> Register</a></li>
+                            <li><a href="{{ url_for('auth.login') }}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                            {% endif %}
                         </ul>
                         </div>
                     </ul>

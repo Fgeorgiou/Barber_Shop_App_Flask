@@ -3,52 +3,10 @@ from flask_login import login_user, logout_user, current_user, login_required
 from app import app, db, login_manager
 from .forms import ContactForm #, LoginForm, EditForm
 # from .models import User
-from datetime import datetime
-
-#global variables
-company_name = {'name' : 'LaKosta'} # Test
-year = datetime.now().year
 
 @app.before_request
 def before_request():
     g.user = current_user
-
-@app.route('/')
-@app.route('/index')
-def index():
-    return render_template("index.html",
-                           title='Home',
-                           company_name=company_name,
-                           year=year)
-
-@app.route('/about_us')
-def about_us():
-    return render_template("about_us.html",
-                           title='About Us',
-                           company_name=company_name,
-                           year=year)
-
-@app.route('/contact', methods=['GET', 'POST'])
-def contact():
-    form = ContactForm()
-
-    if request.method == 'POST':
-      if form.validate() == False:
-        flash('All fields are required.')
-        return render_template('contact.html',
-                           title='Contact',
-                           company_name=company_name,
-                           year=year,
-                           form=form)
-      else:
-        return 'Form posted.'
-
-    elif request.method == 'GET':
-      return render_template("contact.html",
-                           title='Contact',
-                           company_name=company_name,
-                           year=year,
-                           form=form)
 
 @app.route('/appointments')
 def appointments():

@@ -13,7 +13,7 @@ class User(UserMixin, db.Model):
     birth_date = db.Column(db.Date, nullable=False)
     telephone = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(120), unique=True, index=True)
-    password = db.Column(db.String(120))
+    password_hash = db.Column(db.String(120))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     is_admin = db.Column(db.Boolean, default=False)
 
@@ -45,7 +45,7 @@ This callback is used to reload the user object from the user ID stored in the s
 It should take the Unicode ID of a user, and return the corresponding user object.'''
 @login_manager.user_loader
 def load_user(user_id):
-    return Employee.query.get(int(user_id))
+    return User.query.get(int(user_id))
 
 class Role(db.Model):
     """
