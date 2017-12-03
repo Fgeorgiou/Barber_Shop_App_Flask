@@ -1,0 +1,139 @@
+{% extends 'base_template.html' %}
+{% block content %}
+
+<!-- Content --> 
+<!-- Display section of Service Tab -->
+<div class="col-md-0" style="margin-top: 15px;"></div>
+<div class="col-md-12" style="margin-top: 15px;">
+    <div class="wrapper4">
+        <h2 class="text-center">Services</h2>
+        <hr>
+        <table class="table table-hover" id="myTable4">
+            <thead>
+                <th>Service</th>
+                <th>Cost</th>
+            </thead>
+            <tbody id="myTableBody4">
+            {% if services %}
+                {% for service in services %}
+                <tr class="numOfRows">
+                    <td> {{service.name}} </td>
+                    <td> {{service.cost}} </td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+        <div class="col-md-12 text-center">
+           <ul class="pagination pagination-lg pager" id="myPager4"></ul>
+        </div>
+        
+        <button id="btn_add_service" class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span> Add Services</button>
+        <button id="btn_remove_service" class="btn btn-danger"><span class="glyphicon glyphicon-minus-sign"></span> Remove Services</button>
+
+<!-- End of display section of Service Tab -->
+<!-- Start of modal/form section of Service Tab -->
+
+        <!-- The Services Modal -->
+        <!-- The Services Modal will be used to add or remove services.-->
+        <div id="myModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <!--Add service form-->
+                <form class="form-horizontal" action="{{ url_for('admin.services') }}" method="POST" id="add_service_form" hidden>
+                    <h3><b><center>Add Service<center></b></h3>
+                        {{ add_service_form.hidden_tag() }}
+                        <div class="form-group">
+                            <label><b>{{add_service_form.name.label}}</b></label>
+                            {{add_service_form.name(class="form-control")}}
+                        </div>
+                        <div class="form-group">
+                            <label><b>{{add_service_form.cost.label}}</b></label>
+                            {{add_service_form.cost(class="form-control")}}
+                        </div>
+                    <button type="submit" class="btn btn-default">Submit</button>
+                </form>
+
+                <!--Remove service form-->
+                <form class="form-horizontal" action="{{ url_for('admin.services') }}" method="POST" id="remove_service_form" hidden>
+                    <h3><b><center>Remove Service</center></b></h3>
+                        {{ remove_service_form.hidden_tag() }}
+                        <div class="form-group">
+                            <label><b>{{remove_service_form.name.label}}</b></label>
+                            {{remove_service_form.name(class="form-control")}}
+                        </div>                                  
+                    <button type="submit" class="btn btn-default">Submit</button>    
+                </form>
+            </div>
+        </div>    
+    </div>
+</div>    
+<div class="col-md-0" style="margin-top: 15px;"></div>                
+<!-- End of Services tab--> 
+<!-- End of tab-content div-->
+
+    <!-- This is the Jinja template using WTForms to determine if the action was successful or not and adapt the layout of the response respectively-->
+    {% with successes = get_flashed_messages(category_filter=["info"]) %}
+        {% if successes %}
+            {% for message in successes %}
+                <div class="alert alert-success flash">
+                    {{message}}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% with errors = get_flashed_messages(category_filter=["error"]) %}
+        {% if errors %}
+            {% for message in errors %}
+                <div class="alert alert-danger flash">
+                    {{message}}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+<script>
+//The modals are used to collect the neccesary information from the admin in order to make changes to data like appointments/users/services
+// modal control functionality reference:https://www.w3schools.com/bootstrap/bootstrap_modal.asp   
+// Get the modals
+var modal = document.getElementById('myModal');
+
+// Instantiate the buttons that open the modals
+var btn_add_service = document.getElementById("btn_add_service");
+var btn_remove_service = document.getElementById("btn_remove_service");
+
+// Get the <span> elements that close the modals
+var span = document.getElementsByClassName("close")[0];
+
+//get the forms
+var add_service_form = document.getElementById("add_service_form");
+var remove_service_form = document.getElementById("remove_service_form");
+
+// Button interactivity with modals
+btn_add_service.onclick = function() {
+    modal.style.display = "block";
+    add_service_form.style.display = "block";
+    remove_service_form.style.display = "none";
+}
+btn_remove_service.onclick = function() {
+    modal.style.display = "block";
+    remove_service_form.style.display = "block";
+    add_service_form.style.display = "none";
+}
+
+// When the user clicks on <span> (x), close the modals
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modals, close them
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+</script>    
+{%endblock%}

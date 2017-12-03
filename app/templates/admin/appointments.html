@@ -1,0 +1,141 @@
+{% extends 'base_template.html' %}
+{% block content %}
+
+<!-- Content --> 
+<!-- Today's reservations --> 
+<div class="col-md-0" style="margin-top: 15px;"></div>
+<div class="col-md-12" style="margin-top: 15px;">
+    <div class="wrapper4">
+        <h2 class="text-center">Today's Appointments</h2>
+        <hr>
+        <table class="table table-hover" id="myTable1">
+            <thead>
+                <th>Appointment Date</th>
+                <th>Arrival</th>
+                <th>Departure</th>
+                <th>Customer</th>
+                <th>Barber</th>
+                <th>Service</th>
+                <th>Attendance</th>
+                <th>Appointment by</th>
+                <th>Appointment Made on</th>
+            </thead>
+            <tbody id="myTableBody1">
+                <tr class="numOfRows">
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="col-md-12 text-center">
+            <ul class="pagination pagination-lg pager" id="myPager1"></ul>
+        </div>
+        
+        <button id="btn_edit_attendance" class="btn btn-primary"><span class="glyphicon glyphicon-cog"></span> Edit Attendance</button>
+        <button id="btn_add_appointment" class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span> Add Appointment</button>
+        <button id="btn_cancel_appointment" class="btn btn-danger"><span class="glyphicon glyphicon-minus-sign"></span> Cancel Appointment</button>
+
+        <!-- The Attendance Modal -->
+        <div id="myModal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <form action="" method="POST">
+                    <h3><b><center>Edit Attendance<center></b></h3>
+                    <div class="form-group">
+                        <label><span class="glyphicon glyphicon-time"></span><b> Appointment Time:</b></label>
+                        <input class="form-control" type="text" name="resId" required>
+                    </div>
+                    <div class="form-group">
+                        <label><span class="glyphicon glyphicon-user"></span><b> Barber:</b></label>
+                        <input class="form-control" type="text" name="resId" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="attended"><span class="glyphicon glyphicon-check"></span><b> Attended:</b></label>
+                        <input type="radio" name="attended" value="yes" required>Yes
+                        <input type="radio" name="attended" value="no">No
+                    </div>
+                    <button type="submit" class="btn btn-default">Submit</button>    
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-0" style="margin-top: 15px;"></div>     
+<!-- End of reservation for today-->
+
+    <!-- This is the Jinja template using WTForms to determine if the action was successful or not and adapt the layout of the response respectively-->
+    {% with successes = get_flashed_messages(category_filter=["info"]) %}
+        {% if successes %}
+            {% for message in successes %}
+                <div class="alert alert-success flash">
+                    {{message}}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% with errors = get_flashed_messages(category_filter=["error"]) %}
+        {% if errors %}
+            {% for message in errors %}
+                <div class="alert alert-danger flash">
+                    {{message}}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <script>
+    //The modals are used to collect the neccesary information from the admin in order to make changes to data like appointments/users/services
+    // modal control functionality reference:https://www.w3schools.com/bootstrap/bootstrap_modal.asp   
+    // Get the modals
+    var modal = document.getElementById('myModal');
+    var modal2 = document.getElementById('myModal2');
+
+    // Instantiate the buttons that open the modals
+    var btn_edit_attendance = document.getElementById("btn_edit_attendance");
+    var btn_add_service = document.getElementById("btn_add_service");
+    var btn_remove_service = document.getElementById("btn_remove_service");
+
+    // Get the <span> elements that close the modals
+    var span = document.getElementsByClassName("close")[0];
+    var span2 = document.getElementsByClassName("close")[1];
+
+    //get the forms
+    var add_service_form = document.getElementById("add_service_form");
+    var remove_service_form = document.getElementById("remove_service_form");
+
+    // Button interactivity with modals
+    btn_edit_attendance.onclick = function() {
+        modal.style.display = "block";
+    }
+    btn_add_service.onclick = function() {
+        modal2.style.display = "block";
+        add_service_form.style.display = "block";
+        remove_service_form.style.display = "none";
+    }
+    btn_remove_service.onclick = function() {
+        modal2.style.display = "block";
+        remove_service_form.style.display = "block";
+        add_service_form.style.display = "none";
+    }
+
+    // When the user clicks on <span> (x), close the modals
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+    span2.onclick = function() {
+        modal2.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modals, close them
+    window.onclick = function(event) {
+        if (event.target == modal || event.target == modal2) {
+            modal.style.display = "none";
+            modal2.style.display = "none";
+        }
+    }
+
+    </script>    
+{%endblock%}

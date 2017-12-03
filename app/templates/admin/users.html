@@ -1,0 +1,111 @@
+{% extends 'base_template.html' %}
+{% block content %}
+
+<!-- Content --> 
+<!-- Users Tab --> 
+<div class="col-md-0" style="margin-top: 15px;"></div>
+<div class="col-md-12" style="margin-top: 15px;">
+    <div class="wrapper4">
+        <h2 class="text-center">Users</h2>
+        <hr>
+        <table class="table table-hover">
+            <thead>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Birth Date</th>
+                <th>Telephone</th>
+                <th>E-mail</th>
+                <th>Role</th>
+                <th>Admin Privileges</th>
+                <th>Registered in</th>
+            </thead>
+            <tbody>
+                <tr class="numOfRows">
+                    {% if users %}
+                        {% for user in users %}
+                        <td> {{user.first_name}} </td>
+                        <td> {{user.last_name}} </td>
+                        <td> {{user.birth_date}} </td>
+                        <td> {{user.telephone}} </td>
+                        <td> {{user.email}} </td>
+                        <td> {{user.role_id}} </td>
+                        <td> {{user.is_admin}} </td>
+                        <td> {{user.timestamp}} </td>
+                        {% endfor %}
+                    {% endif %}
+                </tr>
+            </tbody>
+        </table>
+        <div class="col-md-12 text-center">
+           <ul class="pagination pagination-lg pager"></ul>
+        </div>
+    </div>
+</div>    
+<div class="col-md-0" style="margin-top: 15px;"></div>                
+<!-- End of Users tab--> 
+
+<!-- This is the Jinja template using WTForms to determine if the action was successful or not and adapt the layout of the response respectively-->
+{% with successes = get_flashed_messages(category_filter=["info"]) %}
+    {% if successes %}
+        {% for message in successes %}
+            <div class="alert alert-success flash">
+                {{message}}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+{% with errors = get_flashed_messages(category_filter=["error"]) %}
+    {% if errors %}
+        {% for message in errors %}
+            <div class="alert alert-danger flash">
+                {{message}}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<script>
+// The modals are used to collect the neccesary information from the admin in order to make changes to data like appointments/users/services
+// modal control functionality reference:https://www.w3schools.com/bootstrap/bootstrap_modal.asp   
+// Get the modals
+var modal = document.getElementById('myModal');
+
+// Instantiate the buttons that open the modals
+var btn_add_user = document.getElementById("btn_add_user");
+var btn_remove_user = document.getElementById("btn_remove_user");
+
+// Get the <span> elements that close the modals
+var span = document.getElementsByClassName("close")[0];
+var span2 = document.getElementsByClassName("close")[1];
+
+//get the forms
+var add_user_form = document.getElementById("add_user_form");
+var remove_user_form = document.getElementById("remove_user_form");
+
+// Button interactivity with modals
+btn_add_user.onclick = function() {
+    modal.style.display = "block";
+    add_service_form.style.display = "block";
+    remove_service_form.style.display = "none";
+}
+btn_remove_user.onclick = function() {
+    modal.style.display = "block";
+    remove_service_form.style.display = "block";
+    add_service_form.style.display = "none";
+}
+
+// When the user clicks on <span> (x), close the modals
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modals, close them
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+</script>    
+{%endblock%}

@@ -1,5 +1,6 @@
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 from app import db, login_manager
 
@@ -8,14 +9,15 @@ class User(UserMixin, db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(64), index=True)
-    last_name = db.Column(db.String(64), index=True)
-    birth_date = db.Column(db.Date, nullable=False)
-    telephone = db.Column(db.String(20), nullable=False)
-    email = db.Column(db.String(120), unique=True, index=True)
-    password_hash = db.Column(db.String(120))
-    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    first_name = db.Column(db.String(64), index=True, nullable=False)
+    last_name = db.Column(db.String(64), index=True, nullable=False)
+    birth_date = db.Column(db.Date)
+    telephone = db.Column(db.String(20))
+    email = db.Column(db.String(120), unique=True, index=True, nullable=False)
+    password_hash = db.Column(db.String(120), nullable=False)
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), default=1)
     is_admin = db.Column(db.Boolean, default=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     @property
     def password(self):
@@ -94,6 +96,9 @@ class Appointment(db.Model):
     customer_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     barber_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     service_id = db.Column(db.Integer, db.ForeignKey('services.id'))
+    attendance = db.Column(db.Boolean, default=False)
+    made_by = db.Column(db.Integer, db.ForeignKey('users.id'))
+    timestamp = db.Column(db.DateTime)
 
     def __repr__(self):
         return '<Appointment: {}>'.format(self.customer_id, " ", self.barber_id, " ", self.service_id)

@@ -73,8 +73,12 @@ def login():
             # log user in
             login_user(user)
 
-            # redirect to index page after login
-            return redirect(url_for('home.index'))
+            #if user is admin, redirect to admin interface
+            if user.is_admin:
+                return redirect(url_for('admin.admin_interface')) 
+            else:
+                # else redirect to index page
+                return redirect(url_for('home.index'))
 
         # when login details are incorrect
         else:
