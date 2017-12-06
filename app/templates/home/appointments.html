@@ -10,7 +10,7 @@
             Please remember that you need to be logged in to make a reservation.
         </div>
         <div class="alert alert-warning text-centered">
-            You have an active reservation. If you want to make a new one, please, <a href="MyAccount">cancel</a> the current one or contact us at 123.456.7890!
+            You have an active reservation. If you want to make a new one, please, <a href="{{url_for("home.my_account")}}">cancel</a> the current one or contact us at 123.456.7890!
         </div>
     </div>
     <div class="col-md-2"></div>
@@ -21,57 +21,33 @@
     <div class="wrapper3">
         <form action="" method="post">
                 <div class="form-group">
-                    <label for="visitdate"><span class="glyphicon glyphicon-calendar"></span><b>Visit Date:</b></label>
-                    <input type="text" id="datepicker" name="visitdate" class="form-control" placeholder="Click to pop the calendar.." required>
+                    <label for="visitdate"><span class="glyphicon glyphicon-calendar"></span><b>Appointment Date:</b></label>
+                    <input type="text" id="datepicker" name="visitdate" class="form-control" placeholder="Click to pick the appointment date" required>
                 </div>
             <div class="form-group">
-                <label for="visittime"><span class="glyphicon glyphicon-time"></span><b>Visit Time:</b></label>
-                    <select name="visittime" required>
-                        <option value="11:00"> 11:00</option>
-                        <option value="12:00"> 12:00</option>
-                        <option value="13:00"> 13:00</option>
-                        <option value="14:00"> 14:00</option>
-                        <option value="15:00"> 15:00</option>
-                        <option value="16:00"> 16:00</option>
-                        <option value="17:00"> 17:00</option>
-                        <option value="18:00"> 18:00</option>
-                        <option value="19:00"> 19:00</option>
-                        <option value="20:00"> 20:00</option>
-                        <option value="21:00"> 21:00</option>
-                        <option value="22:00"> 22:00</option>
-                    </select>
+                <label for="visittime"><span class="glyphicon glyphicon-time"></span><b>Appointment Time:</b></label>
+                <input type="text" id="timepicker" class="form-control" placeholder="Click to pick the appointment time" required>
             </div>
             <div class="form-group">
-                <label for="persons"><span class="glyphicon glyphicon-user"></span><b>Persons:</b></label><br>
-                    <select name="personsoptions"required>
-                        <option value="1"> 1 Person</option>
-                        <option value="2"> 2 Persons</option>
-                        <option value="3"> 3 Persons</option>
-                        <option value="4"> 4 Persons</option>
-                        <option value="5"> 5 Persons</option>
-                        <option value="6"> 6 Persons</option>
-                        <option value="7"> 7 Persons</option>
-                        <option value="8"> 8 Persons</option>
-                        <option value=" " disabled> For a reservation of 9 or more persons please contact us at 123.456.7890 </option>
-                    </select>
+                <label for="persons"><span class="glyphicon glyphicon-scissors"></span><b>Service:</b></label><br>
+                <select name="personsoptions"required>
+                    <option value="1"> 1 Person</option>
+                    <option value="2"> 2 Persons</option>
+                    <option value="3"> 3 Persons</option>
+                    <option value="4"> 4 Persons</option>
+                    <option value="5"> 5 Persons</option>
+                    <option value="6"> 6 Persons</option>
+                    <option value="7"> 7 Persons</option>
+                    <option value="8"> 8 Persons</option>
+                    <option value=" " disabled> For a reservation of 9 or more persons please contact us at 123.456.7890 </option>
+                </select>
             </div>
             
             <div class="form-group">
-                <label for="smokinghabits"><span class="glyphicon glyphicon-cloud"></span><b>Smokers:</b></label>
-                <input type="radio" name="smokers" value="non-smokers" required>No Smokers
-                <input type="radio" name="smokers" value="smokers">Smokers
+                <label><span class="glyphicon glyphicon-user"></span><b> Barber:</b></label>
+                <input type="radio" name="reserved_via" value="Website" required>Website
+                <input type="radio" name="reserved_via" value="Telephone">Telephone
             </div>
-            
-            <div class="form-group">
-                    <label for="reserved_via"><span class="glyphicon glyphicon-earphone"></span><b>Contacted Via:</b></label>
-                    <input type="radio" name="reserved_via" value="Website" required>Website
-                    <input type="radio" name="reserved_via" value="Telephone">Telephone
-                </div>
-
-                <div class="form-group">
-                    <label for="reservationOwner"><b>Reservation Owner:</b></label><br>
-                    <input type="text" name="resowner" required><br>
-                </div>
             <button type="submit" class="btn btn-default" disabled>Submit</button>
         </form>
     </div>        
@@ -80,5 +56,6 @@
 
         
 <!-- End of content-->
+<script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
 {%include 'footer2.html'%}
 {%endblock%}

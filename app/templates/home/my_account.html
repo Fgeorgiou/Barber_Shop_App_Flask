@@ -57,15 +57,6 @@
     setPage(1);        
     });
 </script>
-<!-- Background styling-->
-<style>
-    .error {color: #FF0000;}
-    
-    body {
-    background-image:    url(fonts/Background3t.jpg);
-    background-attachment: fixed;
-    }
-</style>  
     <!-- Content -->
         <!-- Personal Info -->
         <div class="container-default" style="margin-bottom: 75px;">
@@ -96,13 +87,6 @@
                                             "<li> Smoker: " . $row["is_smoker"]. '<a href=update_info_functions/updateSmoker.php> edit<span class="glyphicon glyphicon-edit"></span></a></li>' . "<br>" ;
                                     if($row["is_admin"] === "admin"){
                                         echo " - Account Type: " . substr($row["is_admin"], 0, 1) . str_repeat("*", $acclen-1) . '<a href=update_info_functions/updateAccType.php> edit<span class="glyphicon glyphicon-edit"></span></a></li>' . "<br>" ;
-                                    }
-                                }
-                            } 
-                            else {
-                                echo "0 results";
-                            }
-                        ?>
                     </ul>  
                 </div>     
             </div>
@@ -113,32 +97,19 @@
                 <div class="wrapper3">
                     <h2 class="text-center">Active Reservation</h2>
                     <hr>
-                    <ul>
-                    <?php
-                    //Query for finding the upcoming reservation made by the user
-                    $sql3 = "SELECT reservationid, tableid, second_table, persons, MIN(reserve_date), reserve_time_start, reserve_time_end FROM reservations WHERE userid = '$userid' AND reservation_status = 'active' AND operator = '$operator' GROUP BY reservationid LIMIT 1";
-                    $result3 = mysqli_query($conn, $sql3);
-                    if(mysqli_num_rows($result3) > 0){
-                        while($row = mysqli_fetch_assoc($result3)){
-                            $currentActiveRes = $row['reservationid'];
-                            echo    "<li> Reservation ID: " . $row['reservationid'] . "</li>" . "<br>" .
-                                    "<li> Persons: " . $row['persons'] . "</li>" . "<br>" .
-                                    "<li> Date: " . $row['MIN(reserve_date)'] . "</li>" . "<br>" .
-                                    "<li> Arrival: " . $row['reserve_time_start'] . "</li>" . "<br>" .
-                                    "<li> Departure: " . $row['reserve_time_end'] . "</li>" . "<br>" .
-                                    "<li> Table #1: " . $row['tableid'];
-                            if(isset($row['second_table'])){
-                                echo " &  Table #2: " .  $row['second_table'] . "</li>";
-                            }
-                        }
-                    }else{
-                        echo "<br>" . "<br>" . "<br>" . "<center>There is no active reservation</center>" . "<br>" . "<center><i><p style='font-size:80%;'>*for a reservation to be considered active, it must be done by the user</p></i></center>" . "<br>" . "<br>" . "<br>" . "<br>" . "<br>";
-                    }
-                    ?>
-
+                    <ul class="list-group">
+                        <li class="list-group-item">Appointment Date<span class="badge">12</span></li>
+                        <li class="list-group-item">Arrival<span class="badge">12</span></li>
+                        <li class="list-group-item">Departure<span class="badge">12</span></li>
+                        <li class="list-group-item">Customer<span class="badge">12</span></li>
+                        <li class="list-group-item">Barber<span class="badge">12</span></li>
+                        <li class="list-group-item">Service<span class="badge">12</span></li>
+                        <br><br><br>
+                            <center>There is no active reservation</center><br><center><i><p style='font-size:80%;'>*for a reservation to be considered active, it must be done by the user</p></i></center>
+                        <br><br><br><br><br>
                     </ul>
                     <button>Cancel this Reservation
-
+                        <!-- TODO: pass a query to cancel the reservation -->
                     </button>
                 </div>    
             </div>   
@@ -152,36 +123,17 @@
                     <hr>
                     <table class="table table-hover">
                         <thead>
-                            <th>Reservation ID</th>
-                            <th>Table #1</th>
-                            <th>Table #2</th>
-                            <th>Persons</th>
-                            <th>Reservation Made on</th>
-                            <th>Reserved by</th>
-                            <th>Reserved via</th>
-                            <th>Reserved for</th>
+                            <th>Appointment Date</th>
                             <th>Arrival</th>
                             <th>Departure</th>
-                            <th>Reservation Status</th>
-                            <th>Attendance</th>
+                            <th>Customer</th>
+                            <th>Barber</th>
+                            <th>Service</th>
                         </thead>
                         <tbody id="myTable"></tbody>
-                    <?php
-                    //query for filling the table with the user's reservation history
-                    $sql4 = "SELECT reservationid, tableid, second_table, persons, res_date, operator, reserved_via, reserve_date, reserve_time_start, reserve_time_end, reservation_status, showed_up FROM reservations WHERE userid = '$userid' ORDER BY reservation_status ASC, reserve_date ASC, reserve_time_start ASC";
-                    $result4 = mysqli_query($conn, $sql4);
-                    while($row = mysqli_fetch_assoc($result4)){
-                        echo '<tr class="numOfRows">';
-                            foreach($row as $field) {
-                                if($field === null){
-                                    echo '<td>' .  " - " . '</td>'; 
-                                }else{
-                                echo '<td>' . htmlspecialchars($field) . '</td>';
-                                }
-                            }
-                        echo '</tr>';
-                    }
-                    ?>
+                            <tr class="numOfRows">
+                                <td></td>
+                            </tr>
                         </tbody>
                     </table>
                     <div id="page_display"></div><br>
