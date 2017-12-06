@@ -19,32 +19,12 @@ def check_admin():
 	if not current_user.is_admin:
 		abort(403)
 
-@admin.route('/users', methods=['GET','POST'])
-@login_required
-def users():
-	"""
-	Admin Interface - Users View
-	"""
-	check_admin()
-
-	#Query the database for the required info
-	users = User.query.all()
-
-	return render_template('admin/users.html',
-								title="Admin_Interface",
-								company_name=company_name,
-								users=users)
-
 @admin.route('/services', methods=['GET','POST'])
-@login_required
 def services():
 	"""
-	Admin Interface - Users View
+	Admin Interface - Services Function
 	"""
 	check_admin()
-
-	#Query the database for the required info
-	services = Service.query.all()
 
 	#Instantiating forms
 	add_service_form = AddServiceForm()
@@ -66,41 +46,65 @@ def services():
 		# redirect to admin interface page
 		return redirect(url_for('admin.services'))
 
-	return render_template('admin/services.html',
+	return render_template('admin/admin_interface.html',
 								title="Admin_Interface",
 								company_name=company_name,
-								services=services,
+								users=users_result,
+								services=services_result,
 								add_service_form=add_service_form,
 								remove_service_form=remove_service_form)
 
-@admin.route('/appointments', methods=['GET','POST'])
+# @admin.route('/appointments', methods=['GET','POST'])
+# @login_required
+# def appointments():
+# 	"""
+# 	Admin Interface - Users View
+# 	"""
+# 	check_admin()
+
+# 	#Query the database for the required info
+# 	users = User.query.all()
+
+# 	if request.method == 'POST':
+# 		if add_service_form.validate_on_submit():
+# 			service = Service(name=add_service_form.name.data,
+# 							cost=add_service_form.cost.data)
+# 			try:
+# 				# add service to the database
+# 				db.session.add(service)
+# 				db.session.commit()
+# 				flash('You have successfully added a new service.', 'info')
+# 			except:
+# 				# in case service name already exists
+# 				flash('Error: service name already exists.', 'error')
+
+# 		# redirect to admin interface page
+# 		return redirect(url_for('admin.appointments'))
+
+# 	return render_template('admin/appointments.html',
+# 								title="Admin_Interface",
+# 								company_name=company_name,
+# 								users=users)
+
+
+
+@admin.route('/admin_interface', methods=['GET','POST'])
 @login_required
-def appointments():
+def admin_interface():
 	"""
 	Admin Interface - Users View
 	"""
 	check_admin()
 
 	#Query the database for the required info
-	users = User.query.all()
+	users_result = User.query.all()
+	services_result = Service.query.all()
 
-	if request.method == 'POST':
-		if add_service_form.validate_on_submit():
-			service = Service(name=add_service_form.name.data,
-							cost=add_service_form.cost.data)
-			try:
-				# add service to the database
-				db.session.add(service)
-				db.session.commit()
-				flash('You have successfully added a new service.', 'info')
-			except:
-				# in case service name already exists
-				flash('Error: service name already exists.', 'error')
-
-		# redirect to admin interface page
-		return redirect(url_for('admin.appointments'))
-
-	return render_template('admin/appointments.html',
+	return render_template('admin/admin_interface.html',
 								title="Admin_Interface",
 								company_name=company_name,
-								users=users)
+								users=users_result,
+								services=services_result,
+								add_service_form=AddServiceForm(),
+								remove_service_form=RemoveServiceForm())
+

@@ -25,9 +25,7 @@
                         <ul class="dropdown-menu">
                             {% if current_user.is_authenticated %}
                                 {% if current_user.is_admin %}
-                                    <li><a href="{{ url_for('admin.appointments') }}"><span class="glyphicon glyphicon-king"></span> To Appointments Page</a></li>
-                                    <li><a href="{{ url_for('admin.services') }}"><span class="glyphicon glyphicon-king"></span> To Services Page</a></li>
-                                    <li><a href="{{ url_for('admin.users') }}"><span class="glyphicon glyphicon-king"></span> To User Page</a></li>
+                                    <li><a href="{{ url_for('admin.admin_interface') }}"><span class="glyphicon glyphicon-king"></span> Admin Interface</a></li>
                                 {% else %}
                                     <li><a href="{{ url_for('home.my_account') }}"><span class="glyphicon glyphicon-user"></span> MyAccount</a></li>
                                 {% endif %}
