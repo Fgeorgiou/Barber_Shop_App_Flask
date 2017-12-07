@@ -17,10 +17,8 @@ def flash_errors(form):
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
-    """
-    Handle requests to the /register route
-    Add a user to the database through the registration form
-    """
+    #Add a user to the database through the registration form
+
     form = RegistrationForm()
 
     if request.method == 'POST':

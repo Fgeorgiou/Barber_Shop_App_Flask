@@ -126,6 +126,7 @@
                             <th>Appointment Date</th>
                             <th>Arrival</th>
                             <th>Departure</th>
+                            <th>Appointment Cost</th>
                             <th>Customer</th>
                             <th>Barber</th>
                             <th>Service</th>
@@ -146,4 +147,24 @@
             </div>
             <div class="col-md-0" style="margin-top: 15px;"></div>   
         <!-- End of content-->
+<!-- This is the Jinja template using WTForms to determine if the action was successful or not and adapt the layout of the response respectively-->
+{% with successes = get_flashed_messages(category_filter=["info"]) %}
+    {% if successes %}
+        {% for message in successes %}
+            <div class="alert alert-success flash">
+                {{message}}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+{% with errors = get_flashed_messages(category_filter=["error"]) %}
+    {% if errors %}
+        {% for message in errors %}
+            <div class="alert alert-danger flash">
+                {{message}}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
 {% endblock %}

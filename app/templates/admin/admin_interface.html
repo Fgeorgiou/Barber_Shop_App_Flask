@@ -2,167 +2,161 @@
 {% block content %}
 <!-- This is the page that the admin will use to make changes to tables, reservations, users or track reservation that-->
 <!-- will take place today or the historical data.-->
-        <script>
-            // Reference: http://www.bootply.com/lxa0FF9yhw
-            //script tha will make a pagination for the tables used in the curent page
-            $.fn.pageMe = function(opts){
-                var $this = this,
-                    defaults = {
-                        perPage: 7,
-                        showPrevNext: false,
-                        hidePageNumbers: false
-                    },
-                    settings = $.extend(defaults, opts);
 
-                var listElement = $this;
-                var perPage = settings.perPage; 
-                var children = listElement.children();
-                var pager = $('.pager');
+<script>
+// Reference: http://www.bootply.com/lxa0FF9yhw
+//script tha will make a pagination for the tables used in the curent page
+$.fn.pageMe = function(opts){
+    var $this = this,
+        defaults = {
+            perPage: 7,
+            showPrevNext: false,
+            hidePageNumbers: false
+        },
+        settings = $.extend(defaults, opts);
 
-                if (typeof settings.childSelector!="undefined") {
-                    children = listElement.find(settings.childSelector);
-                }
+    var listElement = $this;
+    var perPage = settings.perPage; 
+    var children = listElement.children();
+    var pager = $('.pager');
 
-                if (typeof settings.pagerSelector!="undefined") {
-                    pager = $(settings.pagerSelector);
-                }
+    if (typeof settings.childSelector!="undefined") {
+        children = listElement.find(settings.childSelector);
+    }
 
-                var numItems = children.length;
-                var numPages = Math.ceil(numItems/perPage);
+    if (typeof settings.pagerSelector!="undefined") {
+        pager = $(settings.pagerSelector);
+    }
 
-                pager.data("curr",0);
+    var numItems = children.length;
+    var numPages = Math.ceil(numItems/perPage);
 
-                if (settings.showPrevNext){
-                    $('<li><a href="#" class="prev_link">«</a></li>').appendTo(pager);
-                }
+    pager.data("curr",0);
 
-                var curr = 0;
-                while(numPages > curr && (settings.hidePageNumbers==false)){
-                    $('<li><a href="#" class="page_link">'+(curr+1)+'</a></li>').appendTo(pager);
-                    curr++;
-                }
+    if (settings.showPrevNext){
+        $('<li><a href="#" class="prev_link">«</a></li>').appendTo(pager);
+    }
 
-                if (settings.showPrevNext){
-                    $('<li><a href="#" class="next_link">»</a></li>').appendTo(pager);
-                }
+    var curr = 0;
+    while(numPages > curr && (settings.hidePageNumbers==false)){
+        $('<li><a href="#" class="page_link">'+(curr+1)+'</a></li>').appendTo(pager);
+        curr++;
+    }
 
-                pager.find('.page_link:first').addClass('active');
-                pager.find('.prev_link').hide();
-                if (numPages<=1) {
-                    pager.find('.next_link').hide();
-                }
-                    pager.children().eq(1).addClass("active");
+    if (settings.showPrevNext){
+        $('<li><a href="#" class="next_link">»</a></li>').appendTo(pager);
+    }
 
-                children.hide();
-                children.slice(0, perPage).show();
+    pager.find('.page_link:first').addClass('active');
+    pager.find('.prev_link').hide();
+    if (numPages<=1) {
+        pager.find('.next_link').hide();
+    }
+        pager.children().eq(1).addClass("active");
 
-                pager.find('li .page_link').click(function(){
-                    var clickedPage = $(this).html().valueOf()-1;
-                    goTo(clickedPage,perPage);
-                    return false;
-                });
-                pager.find('li .prev_link').click(function(){
-                    previous();
-                    return false;
-                });
-                pager.find('li .next_link').click(function(){
-                    next();
-                    return false;
-                });
+    children.hide();
+    children.slice(0, perPage).show();
 
-                function previous(){
-                    var goToPage = parseInt(pager.data("curr")) - 1;
-                    goTo(goToPage);
-                }
+    pager.find('li .page_link').click(function(){
+        var clickedPage = $(this).html().valueOf()-1;
+        goTo(clickedPage,perPage);
+        return false;
+    });
+    pager.find('li .prev_link').click(function(){
+        previous();
+        return false;
+    });
+    pager.find('li .next_link').click(function(){
+        next();
+        return false;
+    });
 
-                function next(){
-                    goToPage = parseInt(pager.data("curr")) + 1;
-                    goTo(goToPage);
-                }
+    function previous(){
+        var goToPage = parseInt(pager.data("curr")) - 1;
+        goTo(goToPage);
+    }
 
-                function goTo(page){
-                    var startAt = page * perPage,
-                        endOn = startAt + perPage;
+    function next(){
+        goToPage = parseInt(pager.data("curr")) + 1;
+        goTo(goToPage);
+    }
 
-                    children.css('display','none').slice(startAt, endOn).show();
+    function goTo(page){
+        var startAt = page * perPage,
+            endOn = startAt + perPage;
 
-                    if (page>=1) {
-                        pager.find('.prev_link').show();
-                    }
-                    else {
-                        pager.find('.prev_link').hide();
-                    }
+        children.css('display','none').slice(startAt, endOn).show();
 
-                    if (page<(numPages-1)) {
-                        pager.find('.next_link').show();
-                    }
-                    else {
-                        pager.find('.next_link').hide();
-                    }
+        if (page>=1) {
+            pager.find('.prev_link').show();
+        }
+        else {
+            pager.find('.prev_link').hide();
+        }
 
-                    pager.data("curr",page);
-                    pager.children().removeClass("active");
-                    pager.children().eq(page+1).addClass("active");
+        if (page<(numPages-1)) {
+            pager.find('.next_link').show();
+        }
+        else {
+            pager.find('.next_link').hide();
+        }
 
-                }
-            };
+        pager.data("curr",page);
+        pager.children().removeClass("active");
+        pager.children().eq(page+1).addClass("active");
 
-            //setting the per page elements on each table
-            $(document).ready(function(){
-              $('#myTableBody1').pageMe({pagerSelector:'#myPager1',showPrevNext:true,hidePageNumbers:false,perPage:4});
-              $('#myTableBody2').pageMe({pagerSelector:'#myPager2',showPrevNext:true,hidePageNumbers:false,perPage:4});
-              $('#myTableBody3').pageMe({pagerSelector:'#myPager3',showPrevNext:true,hidePageNumbers:false,perPage:4});
-              $('#myTableBody4').pageMe({pagerSelector:'#myPager4',showPrevNext:true,hidePageNumbers:false,perPage:6});
-            });
-        </script>
-        <!-- Background styling-->
-        <style>
-            .error {color: #FF0000;}
-            
-            body 
-            background-image:    url(fonts/Background3t.jpg);
-            background-attachment: fixed;
-            }
-            
-            /* Styling for the attendance block - Reference:https://www.w3schools.com/howto/howto_css_modals.asp */
-            /* The Modal (background) */
-            .modal {
-                display: none; /* Hidden by default */
-                position: fixed; /* Stay in place */
-                z-index: 1; /* Sit on top */
-                left: 0;
-                top: 0;
-                width: 100%; /* Full width */
-                height: 100%; /* Full height */
-                overflow: auto; /* Enable scroll if needed */
-                background-color: rgb(0,0,0); /* Fallback color */
-                background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-            }
+    }
+};
 
-            /* Modal Content/Box */
-            .modal-content {
-                background-color: #fefefe;
-                margin: 15% auto; /* 15% from the top and centered */
-                padding: 20px;
-                border: 1px solid #888;
-                width: 80%; /* Could be more or less, depending on screen size */
-            }
+    //setting the per page elements on each table
+    $(document).ready(function(){
+      $('#upcoming_appointments_table_body').pageMe({pagerSelector:'#upcoming_appointments_pager',showPrevNext:true,hidePageNumbers:false,perPage:4});
+      $('#appointments_history_table_body').pageMe({pagerSelector:'#appointments_history_pager',showPrevNext:true,hidePageNumbers:false,perPage:4});
+      $('#users_table_body').pageMe({pagerSelector:'#users_pager',showPrevNext:true,hidePageNumbers:false,perPage:6});
+      $('#servicesTableBody').pageMe({pagerSelector:'#servicesPager',showPrevNext:true,hidePageNumbers:false,perPage:6});
+    });
+</script>
 
-            /* The Close Button */
-            .close {
-                color: #aaa;
-                float: right;
-                font-size: 28px;
-                font-weight: bold;
-            }
+<style>            
+    /* Styling for the attendance block - Reference:https://www.w3schools.com/howto/howto_css_modals.asp */
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
 
-            .close:hover,
-            .close:focus {
-                color: black;
-                text-decoration: none;
-                cursor: pointer;
-            }
-        </style>
+    /* Modal Content/Box */
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto; /* 15% from the top and centered */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%; /* Could be more or less, depending on screen size */
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+</style>
 
 <!-- Content --> 
 <!-- Start of admin's navigation menu div-->
@@ -177,29 +171,45 @@
 <!-- Start of tab-content div-->
 <div class="tab-content">
     <div id="home" class="tab-pane fade in active">
-        <!-- Today's reservations --> 
+        <!-- Upcoming Appointments --> 
         <div class="col-md-0" style="margin-top: 15px;"></div>
         <div class="col-md-12" style="margin-top: 15px;">
             <div class="wrapper4">
                 <h2 class="text-center">Upcoming Appointments</h2>
                 <hr>
-                <table class="table table-hover" id="myTable1">
+                <table class="table table-hover" id="upcoming_appointments_table">
                     <thead>
                         <th>Appointment Date</th>
                         <th>Arrival</th>
                         <th>Departure</th>
+                        <th>Appointment Cost</th>
                         <th>Customer</th>
                         <th>Barber</th>
                         <th>Service</th>
                     </thead>
-                    <tbody id="myTableBody1">
-                        <tr class="numOfRows">
-                            <td></td>
-                        </tr>
+                    <tbody id="upcoming_appointments_table_body">
+                        {% if appointments %}
+                            {% for appointment in appointments %}
+                            <tr class="numOfRows">
+                                <td> {{appointment.appointment_date}} </td>
+                                <td> {{appointment.appointment_start_time}} </td>
+                                <td> {{appointment.appointment_end_time}} </td>
+                                <td> {{appointment.appointment_cost}} </td>
+                                <td> {{appointment.customer_id}} </td>
+                                <td> {{appointment.barber_id}} </td>
+                                <td> {{appointment.service_id}} </td>
+<!--                                 <td>
+                                    <a href="{{ url_for('admin.mark_unattended', id=appointment.id) }}">
+                                        <span class='glyphicon glyphicon-ban-circle'></span> Unattended
+                                    </a>
+                                </td> -->
+                            </tr>
+                            {% endfor %}
+                        {% endif %}
                     </tbody>
                 </table>
                 <div class="col-md-12 text-center">
-                    <ul class="pagination pagination-lg pager" id="myPager1"></ul>
+                    <ul class="pagination pagination-lg pager" id="upcoming_appointments_pager"></ul>
                 </div>
             </div>
         </div>
@@ -214,24 +224,45 @@
             <div class="wrapper4">
                 <h2 class="text-center">Appointment History</h2>
                 <hr>
-                <table class="table table-hover" id="myTable2">
+                <table class="table table-hover" id="appointments_history_table">
                     <thead>
                         <th>Appointment Date</th>
                         <th>Arrival</th>
                         <th>Departure</th>
+                        <th>Appointment Cost</th>
                         <th>Customer</th>
                         <th>Barber</th>
                         <th>Service</th>
+                        <th>Attendance</th>
                         <th>Appointment by</th>
                         <th>Appointment Made on</th>
-                        <th>Attendance</th>
                     </thead>
-                    <tbody id="myTableBody2">
-                        <tr></tr>
+                    <tbody id="appointments_history_table_body">
+                        {% if appointments %}
+                            {% for appointment in appointments %}
+                            <tr class="numOfRows">
+                                <td> {{appointment.appointment_date}} </td>
+                                <td> {{appointment.appointment_start_time}} </td>
+                                <td> {{appointment.appointment_end_time}} </td>
+                                <td> {{appointment.appointment_cost}} </td>
+                                <td> {{appointment.customer_id}} </td>
+                                <td> {{appointment.barber_id}} </td>
+                                <td> {{appointment.service_id}} </td>
+                                <td> {%if appointment.attendance == False%} Unattended {% elif appointment.attendance == True %} Attended {%else%} Pending {%endif%}</td>
+                                <td> {{appointment.made_by}} </td>
+                                <td> {{appointment.timestamp}} </td>
+                                <td>
+                                    <a href="{{ url_for('admin.mark_unattended', id=appointment.id) }}">
+                                        <span class='glyphicon glyphicon-ban-circle'></span> Unattended
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endif %}
                     </tbody>
                 </table>
                 <div class="col-md-12 text-center">
-                   <ul class="pagination pagination-lg pager" id="myPager2"></ul>
+                   <ul class="pagination pagination-lg pager" id="appointments_history_pager"></ul>
                 </div>
 
                 <button id="btn_edit_attendance" class="btn btn-primary"><span class="glyphicon glyphicon-cog"></span> Edit Attendance</button>
@@ -275,7 +306,7 @@
         <div class="wrapper4">
             <h2 class="text-center">Users</h2>
             <hr>
-            <table class="table table-hover">
+            <table class="table table-hover" id="users_table">
                 <thead>
                     <th>First Name</th>
                     <th>Last Name</th>
@@ -286,7 +317,7 @@
                     <th>Admin Privileges</th>
                     <th>Registered in</th>
                 </thead>
-                <tbody>
+                <tbody id="users_table_body">
                     {% if users %}
                         {% for user in users %}
                         <tr class="numOfRows">
@@ -298,14 +329,74 @@
                             <td> {{user.role_id}} </td>
                             <td> {{user.is_admin}} </td>
                             <td> {{user.timestamp}} </td>
+                            <td>
+                                <a href="{{ url_for('admin.delete_user', id=user.id) }}">
+                                    <span class='glyphicon glyphicon-trash'></span> Delete
+                                </a>
+                            </td>
                         </tr>
                         {% endfor %}
                     {% endif %}
                 </tbody>
             </table>
             <div class="col-md-12 text-center">
-               <ul class="pagination pagination-lg pager"></ul>
+               <ul class="pagination pagination-lg pager" id="users_pager"></ul>
             </div>
+
+            <button id="btn_add_user" class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span> Add Users</button>
+            <!-- End of display section of Users Tab -->
+            <!-- Start of modal/form section of Users Tab -->
+
+            <!-- The Users Modal -->
+            <!-- The Users Modal will be used to add or remove services.-->
+            <div id="users_modal" class="modal">
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <!--Add service form-->
+                    <form class="form-horizontal" action="{{ url_for('admin.add_user') }}" method="POST" id="add_user_form">
+                        <h3><b><center>Add User<center></b></h3>
+                            {{ add_user_form.hidden_tag() }}
+                            <div class="form-group">
+                                <label><b>{{add_user_form.first_name.label}}</b></label>
+                                {{add_user_form.first_name(class="form-control", placeholder="Must contain only letters and whitespaces")}}
+                            </div>
+                            <div class="form-group">
+                                <label><b>{{add_user_form.last_name.label}}</b></label>
+                                {{add_user_form.last_name(class="form-control", placeholder="Must contain only letters and whitespaces")}}
+                            </div>
+                            <div class="form-group">
+                                <label><b>{{add_user_form.birth_date.label}}</b></label>
+                                {{add_user_form.birth_date(class="form-control", id="datepicker", placeholder="Click to drop the calendar")}}
+                            </div>
+                            <div class="form-group">
+                                <label><b>{{add_user_form.email.label}}</b></label>
+                                {{add_user_form.email(class="form-control", placeholder="Enter the email")}}
+                            </div>
+                            <div class="form-group">
+                                <label><b>{{add_user_form.telephone.label}}</b></label>
+                                {{add_user_form.telephone(class="form-control", placeholder="Must contain only numbers(10)")}}
+                            </div>
+                            <div class="form-group">
+                                <label><b>{{add_user_form.password.label}}</b></label>
+                                {{add_user_form.password(class="form-control", type="password", placeholder="Must contain 1 capital letter, 1 number & at least 8 characters")}}
+                            </div>
+                            <div class="form-group">
+                                <label><b>{{ add_user_form.confirm_password.label }}</b></label>
+                                {{ add_user_form.confirm_password(class="form-control", type="password", placeholder="Repeat the password") }}
+                            </div>
+                            <div class="form-group">
+                                <label><b>{{add_user_form.role_id.label}}</b></label>
+                                {{add_user_form.role_id(class="form-control")}}
+                            </div>
+                            <div class="form-group">
+                                <label><b>{{add_user_form.is_admin.label}}</b></label>
+                                {{add_user_form.is_admin(class="radio-inline")}}
+                            </div>
+                        <button type="submit" class="btn btn-default">Submit</button>
+                    </form>
+                </div>
+            </div>    
         </div>
     </div>    
     <div class="col-md-0" style="margin-top: 15px;"></div>
@@ -319,12 +410,12 @@
         <div class="wrapper4">
             <h2 class="text-center">Services</h2>
             <hr>
-            <table class="table table-hover" id="myTable4">
+            <table class="table table-hover" id="servicesTable">
                 <thead>
                     <th>Service</th>
                     <th>Cost</th>
                 </thead>
-                <tbody id="myTableBody4">
+                <tbody id="servicesTableBody">
                 {% if services %}
                     {% for service in services %}
                     <tr class="numOfRows">
@@ -341,13 +432,13 @@
                 </tbody>
             </table>
             <div class="col-md-12 text-center">
-               <ul class="pagination pagination-lg pager" id="myPager4"></ul>
+               <ul class="pagination pagination-lg pager" id="servicesPager"></ul>
             </div>
             
             <button id="btn_add_service" class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span> Add Services</button>
 
-    <!-- End of display section of Service Tab -->
-    <!-- Start of modal/form section of Service Tab -->
+            <!-- End of display section of Service Tab -->
+            <!-- Start of modal/form section of Service Tab -->
 
             <!-- The Services Modal -->
             <!-- The Services Modal will be used to add or remove services.-->
@@ -406,11 +497,13 @@
 // Get the modals
 var attendance_modal = document.getElementById('attendance_modal');
 var services_modal = document.getElementById('services_modal');
+var users_modal = document.getElementById('users_modal');
 
 // Get the button that opens the modals
 var btn_edit_attendance = document.getElementById("btn_edit_attendance");
 var btn_add_appointment = document.getElementById("btn_add_appointment");
 var btn_cancel_appointment = document.getElementById("btn_cancel_appointment");
+var btn_add_user = document.getElementById("btn_add_user");
 var btn_add_service = document.getElementById("btn_add_service");
 
 // Get the <span> element that closes the modals
@@ -430,6 +523,9 @@ btn_add_appointment.onclick = function() {
 btn_cancel_appointment.onclick = function() {
     attendance_modal.style.display = "block";
 }
+btn_add_user.onclick = function(){
+    users_modal.style.display = "block";
+}
 btn_add_service.onclick = function() {
     services_modal.style.display = "block";
     add_service_form.style.display = "block";
@@ -445,10 +541,10 @@ span2.onclick = function() {
 
 // When the user clicks anywhere outside of the modals, close them
 window.onclick = function(event) {
-    if (event.target == attendance_modal || event.target == services_modal) {
+    if (event.target == attendance_modal || event.target == services_modal || event.target == users_modal) {
         attendance_modal.style.display = "none";
         services_modal.style.display = "none";
-
+        users_modal.style.display = "none";
     }
 }
 

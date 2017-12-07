@@ -90,9 +90,10 @@ class Appointment(db.Model):
     __tablename__ = 'appointments'
 
     id = db.Column(db.Integer, primary_key=True)
-    appointment_date = db.Column(db.Date, nullable=False)
+    appointment_date = db.Column(db.String(30), nullable=False)
     appointment_start_time = db.Column(db.String(20), nullable=False)
     appointment_end_time = db.Column(db.String(20), nullable=False)
+    appointment_cost = db.Column(db.String(20))
     customer_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     barber_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     service_id = db.Column(db.Integer, db.ForeignKey('services.id'))
