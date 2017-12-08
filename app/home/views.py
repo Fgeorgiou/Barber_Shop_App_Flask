@@ -75,9 +75,8 @@ def appointments():
       if appointment_form.appointment_date.data < today.strftime('%m/%d/%Y'):
         flash ("Appointment can't be scheduled for a date before today" + today.strftime('%m/%d/%Y'), 'error')
       #Criteria b check
-      elif appointment_form.appointment_date.data == today.strftime('%m/%d/%Y'):
-        if time_string < datetime.now().time().strftime('%H:%M'):
-          flash ("Appointment can't be scheduled for a time sooner than now! - Current Time: " + datetime.now().time().strftime('%H:%M'), 'error')
+      elif appointment_form.appointment_date.data == today.strftime('%m/%d/%Y') and time_string < datetime.now().time().strftime('%H:%M'):
+        flash ("Appointment can't be scheduled for a time sooner than now! - Current Time: " + datetime.now().time().strftime('%H:%M'), 'error')
       else:
         #Time calculation function for appointment's end
         def nextTime(time, minutestoadd):
@@ -86,13 +85,18 @@ def appointments():
             newtime = base_time + minutesobj
             return newtime.strftime('%H:%M')
 
+        #calculate the appointment cost based on the user's selection
+        # service_to_evaluate = Service.query.filter_by(id=appointment_form.service.data).first()
+        # service_cost = service_to_evaluate.id
+
+        #Database query for appointment
         appointment = Appointment(appointment_date = appointment_form.appointment_date.data,
                                   appointment_start_time = appointment_form.appointment_time.data,
                                   appointment_end_time = nextTime(time_string, 30),
+                                  #appointment_cost = service_cost,
                                   customer_id = current_user.id,
                                   barber_id = appointment_form.barber.data,
                                   service_id = appointment_form.service.data,
-                                  #appointment_cost = Service.query.get(service_id),
                                   made_by = current_user.id,
                                   timestamp = datetime.now())
 
