@@ -30,7 +30,6 @@
         }
     });
     
-    
     //Previous Button
     $('.prev').click(function(){
         if(page > 1){
@@ -39,13 +38,11 @@
         }
     });
     
-    
     //Generate Page Links
     for(x = 1; x <= last_page; x++){
         $('.pages').append('<a class="links link_"' + x + '">' + x + '</a>' + ' '); 
     }
     
-        
     //Links functions
     $('.links').click(function(){
         $('.links.link_' + page).attr('href', '#');
@@ -57,96 +54,78 @@
     setPage(1);        
     });
 </script>
-    <!-- Content -->
-        <!-- Personal Info -->
-        <div class="container-default" style="margin-bottom: 75px;">
-            <div class="col-md-6">
-                <div class="wrapper3">
-                    <h2 class="text-center">Personal Information</h2>
-                    <hr>
-                    <ul>
-                        <?php 
-                            if (mysqli_num_rows($result) > 0) {
-                                // output data of each row
-                                while($row = mysqli_fetch_assoc($result)) {
+<!-- Content -->
+<!-- Personal Info -->
+<div class="container-default" style="margin-bottom: 75px;">
+    <div class="col-md-6">
+        <div class="wrapper3">
+            <h2 class="text-center">Personal Information</h2>
+            <hr>
+            <ul>
+                <li>email<a href={{ url_for('home.edit_email') }}> edit<span class="glyphicon glyphicon-edit"></span></a></li><br>
+                <li>fname<a href={{ url_for('home.edit_first_name') }}> edit<span class="glyphicon glyphicon-edit"></span></a></li><br>
+                <li>lname<a href={{ url_for('home.edit_last_name') }}> edit<span class="glyphicon glyphicon-edit"></span></a></li><br>
+                <li>telephone<a href={{ url_for('home.edit_telephone') }}> edit<span class="glyphicon glyphicon-edit"></span></a></li><br>
+                <li>password<a href={{ url_for('home.edit_password') }}> edit<span class="glyphicon glyphicon-edit"></span></a></li><br>
+            </ul>  
+        </div>     
+    </div>
+    <!-- End of Personal Info -->
+    
+    <!-- Start of Active Reservation -->
+    <div class="col-md-6">
+        <div class="wrapper3">
+            <h2 class="text-center">Active Reservation</h2>
+            <hr>
+            <ul class="list-group">
+                <li class="list-group-item">Appointment Date<span class="badge">12</span></li>
+                <li class="list-group-item">Arrival<span class="badge">12</span></li>
+                <li class="list-group-item">Departure<span class="badge">12</span></li>
+                <li class="list-group-item">Barber<span class="badge">12</span></li>
+                <li class="list-group-item">Service<span class="badge">12</span></li>
+                <br><br><br>
+                    <center>There is no active reservation</center><br>
+                <br><br><br><br><br>
+            </ul>
+            <button>Cancel this Reservation
+                <!-- TODO: pass a query to cancel the reservation -->
+            </button>
+        </div>    
+    </div>   
+</div>
 
-                                    $lnlen = strlen($row["last_name"]);
-                                    $emaillen = strlen($row["email"]);
-                                    $emailduck = strpos($row["email"],"@");
-                                    $tellen = strlen($row["telephone"]);
-                                    $pwdlen = strlen($row["password"]);
-                                    $acclen = strlen($row["is_admin"]);
-                                    //Just displaying all the personal data freely could cause security breaches in cases that the user is navigating the page
-                                    // in either an outdoor envioment where he can be seen or a public network so the data could be fished out.
-                                    //It was chosen to filter the data with the functions substr(), strlen(), str_repeat() as to hide parts of the info and replace it with stars, just like passwords do.
-                                    echo    "<li> Name: " . $row["first_name"]. '<a href=update_info_functions/updateFirstName.php> edit<span class="glyphicon glyphicon-edit"></span></a></li>' . "<br>" . 
-                                            "<li> Lastname: " . substr($row["last_name"], 0, 1) . str_repeat("*", $lnlen-1) . '<a href=update_info_functions/updateLastName.php> edit<span class="glyphicon glyphicon-edit"></span></a></li>' . "<br>" . 
-                                            "<li> E-mail: " . substr($row["email"], 0, 1) . str_repeat("*", $emailduck-1) . substr($row["email"], $emailduck) . '<a href=update_info_functions/updateEmail.php> edit<span class="glyphicon glyphicon-edit"></span></a></li>' . "<br>" . 
-                                            "<li> Telephone: " . substr($row["telephone"], 0, 3) . str_repeat("*", $tellen-3) .'<a href=update_info_functions/updateTelephone.php> edit<span class="glyphicon glyphicon-edit"></span></a></li>' . "<br>" . 
-                                            "<li> Password: " . substr($row["password"], 0, 1) . str_repeat("*", $pwdlen-1) . '<a href=update_info_functions/updatePassword.php> edit<span class="glyphicon glyphicon-edit"></span></a></li>' . "<br>" . 
-                                            "<li> Smoker: " . $row["is_smoker"]. '<a href=update_info_functions/updateSmoker.php> edit<span class="glyphicon glyphicon-edit"></span></a></li>' . "<br>" ;
-                                    if($row["is_admin"] === "admin"){
-                                        echo " - Account Type: " . substr($row["is_admin"], 0, 1) . str_repeat("*", $acclen-1) . '<a href=update_info_functions/updateAccType.php> edit<span class="glyphicon glyphicon-edit"></span></a></li>' . "<br>" ;
-                    </ul>  
-                </div>     
-            </div>
-            <!-- End of Personal Info -->
+<!--Start of Reservation History -->
+    <div class="col-md-0" style="margin-top: 15px;"></div>
+    <div class="col-md-12" style="margin-top: 15px;">
+        <div class="wrapper4">
+            <h2 class="text-center">Reservation History</h2>
+            <hr>
+            <table class="table table-hover">
+                <thead>
+                    <th>Appointment Date</th>
+                    <th>Arrival</th>
+                    <th>Departure</th>
+                    <th>Appointment Cost</th>
+                    <th>Customer</th>
+                    <th>Barber</th>
+                    <th>Service</th>
+                </thead>
+                <tbody id="myTable"></tbody>
+                    <tr class="numOfRows">
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div id="page_display"></div><br>
             
-            <!-- Start of Active Reservation -->
-            <div class="col-md-6">
-                <div class="wrapper3">
-                    <h2 class="text-center">Active Reservation</h2>
-                    <hr>
-                    <ul class="list-group">
-                        <li class="list-group-item">Appointment Date<span class="badge">12</span></li>
-                        <li class="list-group-item">Arrival<span class="badge">12</span></li>
-                        <li class="list-group-item">Departure<span class="badge">12</span></li>
-                        <li class="list-group-item">Customer<span class="badge">12</span></li>
-                        <li class="list-group-item">Barber<span class="badge">12</span></li>
-                        <li class="list-group-item">Service<span class="badge">12</span></li>
-                        <br><br><br>
-                            <center>There is no active reservation</center><br><center><i><p style='font-size:80%;'>*for a reservation to be considered active, it must be done by the user</p></i></center>
-                        <br><br><br><br><br>
-                    </ul>
-                    <button>Cancel this Reservation
-                        <!-- TODO: pass a query to cancel the reservation -->
-                    </button>
-                </div>    
-            </div>   
+            <span class="pages"></span><br>
+            
+            <button type="button" class="prev">Previous</button>
+            <button type="button" class="next">Next</button>
         </div>
-        
-        <!--Start of Reservation History -->
-            <div class="col-md-0" style="margin-top: 15px;"></div>
-            <div class="col-md-12" style="margin-top: 15px;">
-                <div class="wrapper4">
-                    <h2 class="text-center">Reservation History</h2>
-                    <hr>
-                    <table class="table table-hover">
-                        <thead>
-                            <th>Appointment Date</th>
-                            <th>Arrival</th>
-                            <th>Departure</th>
-                            <th>Appointment Cost</th>
-                            <th>Customer</th>
-                            <th>Barber</th>
-                            <th>Service</th>
-                        </thead>
-                        <tbody id="myTable"></tbody>
-                            <tr class="numOfRows">
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div id="page_display"></div><br>
-                    
-                    <span class="pages"></span><br>
-                    
-                    <button type="button" class="prev">Previous</button>
-                    <button type="button" class="next">Next</button>
-                </div>
-            </div>
-            <div class="col-md-0" style="margin-top: 15px;"></div>   
-        <!-- End of content-->
+    </div>
+    <div class="col-md-0" style="margin-top: 15px;"></div>   
+<!-- End of content-->
 <!-- This is the Jinja template using WTForms to determine if the action was successful or not and adapt the layout of the response respectively-->
 {% with successes = get_flashed_messages(category_filter=["info"]) %}
     {% if successes %}

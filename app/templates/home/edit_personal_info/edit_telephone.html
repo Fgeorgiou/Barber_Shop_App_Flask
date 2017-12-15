@@ -1,0 +1,48 @@
+{% extends 'base_template.html' %}
+{% block content %}
+<!--Form--> 
+<div class="row">    
+    <div class="col-sm-4"></div>
+    <div class="col-sm-4">
+        <div class="wrapper2">
+        <form action={{ url_for('home.edit_telephone') }} method="post">
+                <div class="form-group">
+                    <label for="telold"><b>Currently Used Telephone Number:</b></label>
+                    <input type="text" class="form-control" name="telold">
+                </div>
+                <div class="form-group">
+                    <label for="tel1"><b>New Telephone Number:</b></label>
+                    <input type="text" class="form-control" name="tel1">
+                </div>
+                <div class="form-group">
+                    <label for="tel2"><b>Repeat New Telephone Number:</b></label>
+                    <input type="text" class="form-control" name="tel2">
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>  
+        </div>                                      
+    </div>
+    <div class="col-sm-4"></div>
+</div>
+
+<!-- This is the Jinja template using WTForms to determine if the action was successful or not and adapt the layout of the response respectively-->
+{% with successes = get_flashed_messages(category_filter=["info"]) %}
+    {% if successes %}
+        {% for message in successes %}
+            <div class="alert alert-success flash">
+                {{message}}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+{% with errors = get_flashed_messages(category_filter=["error"]) %}
+    {% if errors %}
+        {% for message in errors %}
+            <div class="alert alert-danger flash">
+                {{message}}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+{% endblock %}

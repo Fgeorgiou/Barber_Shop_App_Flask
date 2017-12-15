@@ -147,8 +147,8 @@ $.fn.pageMe = function(opts){
                         <th>Service</th>
                     </thead>
                     <tbody id="upcoming_appointments_table_body">
-                        {% if upcoming_appontments %}
-                            {% for up_app in upcoming_appontments %}
+                        {% if upcoming_appointments %}
+                            {% for up_app in upcoming_appointments %}
                             <tr>
                                 <td> {{up_app.appointment_date}} </td>
                                 <td> {{up_app.appointment_start_time}} </td>
@@ -203,7 +203,6 @@ $.fn.pageMe = function(opts){
                                 <td> {{appointment.barber_id}} </td>
                                 <td> {{appointment.service_id}} </td>
                                 <td> {{appointment.attendance}}</td>
-                                <td> {{appointment.made_by}} </td>
                                 <td> {{appointment.timestamp}} </td>
                                 <td>
                                     <button class="btn btn-success btn-xs">
@@ -303,7 +302,7 @@ $.fn.pageMe = function(opts){
                             <td> {{user.birth_date}} </td>
                             <td> {{user.telephone}} </td>
                             <td> {{user.email}} </td>
-                            <td> {{user.role_id}} </td>
+                            <td> {{user.role_id}}</td>
                             <td> {{user.is_admin}} </td>
                             <td> {{user.timestamp}} </td>
                             <td>

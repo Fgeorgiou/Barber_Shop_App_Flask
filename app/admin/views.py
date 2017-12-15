@@ -135,14 +135,14 @@ def add_appointment():
 
 				#Database query for appointment
 				appointment = Appointment(appointment_date = add_appointment_form.appointment_date.data,
-				appointment_start_time = add_appointment_form.appointment_time.data,
-				appointment_end_time = nextTime(time_string, 30),
-				#appointment_cost = service_cost,
-				customer_id = add_appointment_form.customer.data,
-				barber_id = add_appointment_form.barber.data,
-				service_id = add_appointment_form.service.data,
-				made_by = current_user.id,
-				timestamp = datetime.now())
+					appointment_start_time = add_appointment_form.appointment_time.data,
+					appointment_end_time = nextTime(time_string, 30),
+					#appointment_cost = service_cost,
+					customer_id = add_appointment_form.customer.data,
+					barber_id = add_appointment_form.barber.data,
+					service_id = add_appointment_form.service.data,
+					made_by = current_user.id,
+					timestamp = datetime.now())
 
 				db.session.add(appointment)
 				db.session.commit()
@@ -246,32 +246,35 @@ def mark_canceled(id):
 @admin.route('/admin_interface', methods=['GET','POST'])
 @login_required
 def admin_interface():
-	"""
-	Admin Interface - Users View
-	"""
+	#Admin Interface - Users View
 	check_admin()
+
 	today = datetime(year, month, day)
 
 	#Query the database for the required info
 	#Query for collecting the users
-	users_result = db.session.query(User).order_by(User.first_name)
+	users_result = User.query.all()
+	#Query for collecting the roles
+	roles_result = Role.query.all()
 	#Query for collecting the services
 	services_result = db.session.query(Service).order_by(Service.name)
 	#Query for collecting the appointments in descending order
-	appointments_result = db.session.query(Appointment).order_by(Appointment.appointment_date.desc())
-
+	appointments_result = Appointment.query.all()
 	#Query for getting the appointments with a date of today and a time later than now
-	upcoming_appontments = db.session.query(Appointment).filter(and_(Appointment.appointment_date == today.strftime('%m/%d/%Y')
+	upcoming_appointments = db.session.query(Appointment).filter(and_(Appointment.appointment_date == today.strftime('%m/%d/%Y')
 														,Appointment.appointment_start_time > datetime.now().time().strftime('%H:%M')))
+
+	appointments_formatted = Appointment.query.join(User, Appointment.customer_id == User.id)
 
 
 	return render_template('admin/admin_interface.html',
 								title="Admin Interface",
 								company_name=company_name,
 								users=users_result,
+								roles=roles_result,
 								services=services_result,
 								appointments=appointments_result,
-								upcoming_appontments=upcoming_appontments,
+								upcoming_appointments=upcoming_appointments,
 								add_appointment_form=AdminAppointmentForm(),
 								add_service_form=AddServiceForm(),
 								add_user_form=AddUserForm())

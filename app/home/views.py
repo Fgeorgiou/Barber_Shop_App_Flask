@@ -118,7 +118,49 @@ def appointments():
 @home.route('/my_account')
 @login_required
 def my_account():
-    return render_template("home/my_account.html",
-                           title='My Account',
-                           company_name=company_name,
-                           year=year)      
+
+
+  return render_template("home/my_account.html",
+                         title='My Account',
+                         company_name=company_name,
+                         year=year)    
+
+@home.route('/edit_email')
+@login_required
+def edit_email():
+  return render_template("home/edit_personal_info/edit_email.html",
+                     title='My Account',
+                     company_name=company_name,
+                     year=year)    
+
+@home.route('/edit_first_name')
+@login_required
+def edit_first_name():
+  return render_template("home/edit_personal_info/edit_first_name.html",
+                     title='My Account',
+                     company_name=company_name,
+                     year=year)  
+
+@home.route('/edit_last_name')
+@login_required
+def edit_last_name():
+  return render_template("home/edit_personal_info/edit_last_name.html",
+                     title='My Account',
+                     company_name=company_name,
+                     year=year)  
+
+@home.route('/edit_telephone')
+@login_required
+def edit_telephone():
+  return render_template("home/edit_personal_info/edit_telephone.html",
+                     title='My Account',
+                     company_name=company_name,
+                     year=year)  
+
+@home.route('/edit_password')
+@login_required
+def edit_password():
+  return render_template("home/edit_personal_info/edit_password.html",
+                     title='My Account',
+                     company_name=company_name,
+                     year=year)  
