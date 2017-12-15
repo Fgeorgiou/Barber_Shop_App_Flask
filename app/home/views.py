@@ -6,7 +6,7 @@ from . import home
 from ..models import *
 
 #global variables
-company_name = {'name' : 'LaKosta'} # Test
+company_name = {'name' : 'LaKosta'}
 year = datetime.now().year
 month = datetime.now().month
 day = datetime.now().day

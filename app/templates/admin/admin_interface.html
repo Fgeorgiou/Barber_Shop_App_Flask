@@ -110,53 +110,12 @@ $.fn.pageMe = function(opts){
 
     //setting the per page elements on each table
     $(document).ready(function(){
-      $('#upcoming_appointments_table_body').pageMe({pagerSelector:'#upcoming_appointments_pager',showPrevNext:true,hidePageNumbers:false,perPage:4});
-      $('#appointments_history_table_body').pageMe({pagerSelector:'#appointments_history_pager',showPrevNext:true,hidePageNumbers:false,perPage:4});
-      $('#users_table_body').pageMe({pagerSelector:'#users_pager',showPrevNext:true,hidePageNumbers:false,perPage:6});
-      $('#servicesTableBody').pageMe({pagerSelector:'#servicesPager',showPrevNext:true,hidePageNumbers:false,perPage:6});
+        $('#upcoming_appointments_table_body').pageMe({pagerSelector:'#upcoming_appointments_pager',showPrevNext:true,hidePageNumbers:false,perPage:6});
+        $('#appointments_history_table_body').pageMe({pagerSelector:'#appointments_history_pager',showPrevNext:true,hidePageNumbers:false,perPage:6});
+        $('#users_table_body').pageMe({pagerSelector:'#users_pager',showPrevNext:true,hidePageNumbers:false,perPage:6});
+        $('#servicesTableBody').pageMe({pagerSelector:'#servicesPager',showPrevNext:true,hidePageNumbers:false,perPage:6});
     });
 </script>
-
-<style>            
-    /* Styling for the attendance block - Reference:https://www.w3schools.com/howto/howto_css_modals.asp */
-    /* The Modal (background) */
-    .modal {
-        display: none; /* Hidden by default */
-        position: fixed; /* Stay in place */
-        z-index: 1; /* Sit on top */
-        left: 0;
-        top: 0;
-        width: 100%; /* Full width */
-        height: 100%; /* Full height */
-        overflow: auto; /* Enable scroll if needed */
-        background-color: rgb(0,0,0); /* Fallback color */
-        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-    }
-
-    /* Modal Content/Box */
-    .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto; /* 15% from the top and centered */
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%; /* Could be more or less, depending on screen size */
-    }
-
-    /* The Close Button */
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
-</style>
 
 <!-- Content --> 
 <!-- Start of admin's navigation menu div-->
@@ -188,21 +147,16 @@ $.fn.pageMe = function(opts){
                         <th>Service</th>
                     </thead>
                     <tbody id="upcoming_appointments_table_body">
-                        {% if appointments %}
-                            {% for appointment in appointments %}
-                            <tr class="numOfRows">
-                                <td> {{appointment.appointment_date}} </td>
-                                <td> {{appointment.appointment_start_time}} </td>
-                                <td> {{appointment.appointment_end_time}} </td>
-                                <td> {{appointment.appointment_cost}} </td>
-                                <td> {{appointment.customer_id}} </td>
-                                <td> {{appointment.barber_id}} </td>
-                                <td> {{appointment.service_id}} </td>
-<!--                                 <td>
-                                    <a href="{{ url_for('admin.mark_unattended', id=appointment.id) }}">
-                                        <span class='glyphicon glyphicon-ban-circle'></span> Unattended
-                                    </a>
-                                </td> -->
+                        {% if upcoming_appontments %}
+                            {% for up_app in upcoming_appontments %}
+                            <tr>
+                                <td> {{up_app.appointment_date}} </td>
+                                <td> {{up_app.appointment_start_time}} </td>
+                                <td> {{up_app.appointment_end_time}} </td>
+                                <td> {{up_app.appointment_cost}} </td>
+                                <td> {{up_app.customer_id}} </td>
+                                <td> {{up_app.barber_id}} </td>
+                                <td> {{up_app.service_id}} </td>
                             </tr>
                             {% endfor %}
                         {% endif %}
@@ -215,7 +169,7 @@ $.fn.pageMe = function(opts){
         </div>
         <div class="col-md-0" style="margin-top: 15px;"></div>       
     </div>
-    <!-- End of reservation for today-->
+    <!-- End of Upcoming Appointments-->
     
     <!-- Reservation History --> 
     <div id="menu1" class="tab-pane fade">
@@ -248,13 +202,29 @@ $.fn.pageMe = function(opts){
                                 <td> {{appointment.customer_id}} </td>
                                 <td> {{appointment.barber_id}} </td>
                                 <td> {{appointment.service_id}} </td>
-                                <td> {%if appointment.attendance == False%} Unattended {% elif appointment.attendance == True %} Attended {%else%} Pending {%endif%}</td>
+                                <td> {{appointment.attendance}}</td>
                                 <td> {{appointment.made_by}} </td>
                                 <td> {{appointment.timestamp}} </td>
                                 <td>
-                                    <a href="{{ url_for('admin.mark_unattended', id=appointment.id) }}">
-                                        <span class='glyphicon glyphicon-ban-circle'></span> Unattended
-                                    </a>
+                                    <button class="btn btn-success btn-xs">
+                                        <a style="color: #fff; text-decoration: :none;" href="{{ url_for('admin.mark_attended', id=appointment.id) }}">
+                                            <span class='glyphicon glyphicon-ok-sign'></span> Attended
+                                        </a>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-warning btn-xs">
+                                        <a style="color: #fff; text-decoration: :none;" href="{{ url_for('admin.mark_unattended', id=appointment.id) }}">
+                                            <span class='glyphicon glyphicon-minus-sign'></span> Unattended
+                                        </a>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger btn-xs">
+                                        <a style="color: #fff; text-decoration: :none;" href="{{ url_for('admin.mark_canceled', id=appointment.id) }}">
+                                            <span class='glyphicon glyphicon-remove-sign'></span> Cancel
+                                        </a>
+                                    </button>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -265,31 +235,38 @@ $.fn.pageMe = function(opts){
                    <ul class="pagination pagination-lg pager" id="appointments_history_pager"></ul>
                 </div>
 
-                <button id="btn_edit_attendance" class="btn btn-primary"><span class="glyphicon glyphicon-cog"></span> Edit Attendance</button>
                 <button id="btn_add_appointment" class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span> Add Appointment</button>
                 <button id="btn_cancel_appointment" class="btn btn-danger"><span class="glyphicon glyphicon-minus-sign"></span> Cancel Appointment</button>
 
-                <!-- The Attendance Modal -->
-                <div id="attendance_modal" class="modal">
+                <!-- The Appointment Management Modal -->
+                <div id="appointment_management_modal" class="modal">
                     <!-- Modal content -->
                     <div class="modal-content">
                         <span class="close">&times;</span>
-                        <form action="" method="POST">
-                            <h3><b><center>Edit Attendance<center></b></h3>
+                        <form action="{{ url_for('admin.add_appointment') }}" method="post">
+                            {{ add_appointment_form.hidden_tag() }}
+                            <h3><b><center>Make an Appointment<center></b></h3>
                             <div class="form-group">
-                                <label><span class="glyphicon glyphicon-time"></span><b> Appointment Time:</b></label>
-                                <input class="form-control" type="text" name="resId" required>
+                                <label><span class="glyphicon glyphicon-calendar"></span><b>{{ add_appointment_form.appointment_date.label }}</b></label>
+                                {{add_appointment_form.appointment_date(class="form-control",type="text", id="datepicker2", placeholder="Click to pick the appointment date")}}
                             </div>
                             <div class="form-group">
-                                <label><span class="glyphicon glyphicon-user"></span><b> Barber:</b></label>
-                                <input class="form-control" type="text" name="resId" required>
+                                <label><span class="glyphicon glyphicon-time"></span><b>{{ add_appointment_form.appointment_time.label }}</b></label>
+                                {{add_appointment_form.appointment_time(class="form-control",type="text", id="timepicker2", placeholder="Click to pick the appointment time")}}
                             </div>
                             <div class="form-group">
-                                <label for="attended"><span class="glyphicon glyphicon-check"></span><b> Attended:</b></label>
-                                <input type="radio" name="attended" value="yes" required>Yes
-                                <input type="radio" name="attended" value="no">No
+                                <label><span class="glyphicon glyphicon-user"></span><b>{{ add_appointment_form.customer.label }}</b></label><br>
+                                {{add_appointment_form.customer(class="form-control")}}
                             </div>
-                            <button type="submit" class="btn btn-default">Submit</button>    
+                            <div class="form-group">
+                                <label><span class="glyphicon glyphicon-user"></span><b>{{ add_appointment_form.barber.label }}</b></label><br>
+                                {{add_appointment_form.barber(class="form-control")}}
+                            </div>
+                            <div class="form-group">
+                                <label><span class="glyphicon glyphicon-scissors"></span><b>{{ add_appointment_form.service.label }}</b></label>
+                                {{add_appointment_form.service(class="form-control")}}
+                            </div>
+                            <button type="submit" class="btn btn-default">Submit</button>
                         </form>
                     </div>
                 </div>
@@ -297,7 +274,7 @@ $.fn.pageMe = function(opts){
         </div>
         <div class="col-md-0" style="margin-top: 15px;"></div> 
     </div>
-    <!-- End of reservation for today-->
+    <!-- End of Reservation History-->
     
     <!-- Users Tab --> 
     <div id="menu2" class="tab-pane fade">
@@ -320,7 +297,7 @@ $.fn.pageMe = function(opts){
                 <tbody id="users_table_body">
                     {% if users %}
                         {% for user in users %}
-                        <tr class="numOfRows">
+                        <tr>
                             <td> {{user.first_name}} </td>
                             <td> {{user.last_name}} </td>
                             <td> {{user.birth_date}} </td>
@@ -330,9 +307,11 @@ $.fn.pageMe = function(opts){
                             <td> {{user.is_admin}} </td>
                             <td> {{user.timestamp}} </td>
                             <td>
-                                <a href="{{ url_for('admin.delete_user', id=user.id) }}">
-                                    <span class='glyphicon glyphicon-trash'></span> Delete
-                                </a>
+                                <button class="btn btn-xs btn-danger">
+                                    <a style="color: #fff; text-decoration: none;" href="{{ url_for('admin.delete_user', id=user.id) }}">
+                                        <span class='glyphicon glyphicon-trash'></span> Delete
+                                    </a>
+                                </button>
                             </td>
                         </tr>
                         {% endfor %}
@@ -418,7 +397,7 @@ $.fn.pageMe = function(opts){
                 <tbody id="servicesTableBody">
                 {% if services %}
                     {% for service in services %}
-                    <tr class="numOfRows">
+                    <tr>
                         <td> {{service.name}} </td>
                         <td> {{service.cost}} </td>
                         <td>
@@ -466,7 +445,7 @@ $.fn.pageMe = function(opts){
     </div>    
     <div class="col-md-0" style="margin-top: 15px;"></div>   
     </div>                      
-    <!-- End of Tables tab--> 
+    <!-- End of Services tab--> 
 </div>
 <!-- End of tab-content div-->
 
@@ -495,12 +474,11 @@ $.fn.pageMe = function(opts){
 //This modals are used to collect the necesary information from the user in order to make some changes to data like reervations or tables
 // variables & functions for modal control Reference:https://www.w3schools.com/bootstrap/bootstrap_modal.asp   
 // Get the modals
-var attendance_modal = document.getElementById('attendance_modal');
+var appointment_management_modal = document.getElementById('appointment_management_modal');
 var services_modal = document.getElementById('services_modal');
 var users_modal = document.getElementById('users_modal');
 
 // Get the button that opens the modals
-var btn_edit_attendance = document.getElementById("btn_edit_attendance");
 var btn_add_appointment = document.getElementById("btn_add_appointment");
 var btn_cancel_appointment = document.getElementById("btn_cancel_appointment");
 var btn_add_user = document.getElementById("btn_add_user");
@@ -514,14 +492,11 @@ var span2 = document.getElementsByClassName("close")[1];
 var add_service_form = document.getElementById("add_service_form");
 
 // When the user clicks on the button, open the modals
-btn_edit_attendance.onclick = function() {
-    attendance_modal.style.display = "block";
-}
 btn_add_appointment.onclick = function() {
-    attendance_modal.style.display = "block";
+    appointment_management_modal.style.display = "block";
 }
 btn_cancel_appointment.onclick = function() {
-    attendance_modal.style.display = "block";
+    appointment_management_modal.style.display = "block";
 }
 btn_add_user.onclick = function(){
     users_modal.style.display = "block";
@@ -533,7 +508,7 @@ btn_add_service.onclick = function() {
 
 // When the user clicks on <span> (x), close the modals
 span.onclick = function() {
-    attendance_modal.style.display = "none";
+    appointment_management_modal.style.display = "none";
 }
 span2.onclick = function() {
     services_modal.style.display = "none";
@@ -541,12 +516,13 @@ span2.onclick = function() {
 
 // When the user clicks anywhere outside of the modals, close them
 window.onclick = function(event) {
-    if (event.target == attendance_modal || event.target == services_modal || event.target == users_modal) {
-        attendance_modal.style.display = "none";
+    if (event.target == appointment_management_modal || event.target == services_modal || event.target == users_modal) {
+        appointment_management_modal.style.display = "none";
         services_modal.style.display = "none";
         users_modal.style.display = "none";
     }
 }
 
 </script>    
+<script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
 {% endblock %}

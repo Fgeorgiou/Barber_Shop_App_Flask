@@ -5,6 +5,7 @@ from datetime import datetime
 from app import db, login_manager
 
 class User(UserMixin, db.Model):
+    #Creates the Users table
 
     __tablename__ = 'users'
 
@@ -21,22 +22,19 @@ class User(UserMixin, db.Model):
 
     @property
     def password(self):
-        """
-        Prevent pasword from being accessed
-        """
+        #Prevent password from being accessed
+
         raise AttributeError('password is not a readable attribute.')
 
     @password.setter
     def password(self, password):
-        """
-        Set password to a hashed password
-        """
+        #Set password to a hashed password
+
         self.password_hash = generate_password_hash(password)
 
     def verify_password(self, password):
-        """
-        Check if hashed password matches actual password
-        """
+        #Check if hashed password matches actual password
+
         return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
@@ -50,9 +48,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 class Role(db.Model):
-    """
-    Create a Role table
-    """
+    #Creates the Roles table
 
     __tablename__ = 'roles'
 
@@ -66,9 +62,7 @@ class Role(db.Model):
 
 
 class Service(db.Model):
-    """
-    Create a Services table
-    """
+    #Creates the Services table
 
     __tablename__ = 'services'
 
@@ -97,7 +91,7 @@ class Appointment(db.Model):
     customer_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     barber_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     service_id = db.Column(db.Integer, db.ForeignKey('services.id'))
-    attendance = db.Column(db.Boolean, default=False)
+    attendance = db.Column(db.String(20), default='Pending')
     made_by = db.Column(db.Integer, db.ForeignKey('users.id'))
     timestamp = db.Column(db.DateTime)
 

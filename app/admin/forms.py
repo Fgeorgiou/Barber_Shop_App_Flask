@@ -2,13 +2,28 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, DateField, SelectField, RadioField, SubmitField, ValidationError
 from wtforms.validators import InputRequired, Email, EqualTo, Regexp
  
-from ..models import User
+from ..models import User, Service
 
 #This is the form that will handle service additions
 class AddServiceForm(FlaskForm):
   	name = StringField("Service Name:", [InputRequired()])
   	cost = StringField("Cost:", [InputRequired()])
   	submit = SubmitField("Submit")
+
+#This is the form that will handle appointment scheduling.
+class AdminAppointmentForm(FlaskForm):
+  	appointment_date = StringField("Appointment Date:", [InputRequired()])
+  	appointment_time = StringField("Appointment Time:", [InputRequired()])
+  	customer = SelectField("Customer:", coerce=int, validators=[InputRequired()])
+  	barber = SelectField("Barber:", coerce=int, validators=[InputRequired()])
+  	service = SelectField("Service:", coerce=int, validators=[InputRequired()])
+  	submit = SubmitField("Submit")
+
+  	def __init__(self, *args, **kwargs):
+  		super(AdminAppointmentForm, self).__init__(*args, **kwargs)
+  		self.customer.choices = [(c.id, c.first_name + ' ' + c.last_name) for c in User.query.filter_by(role_id=1)]
+  		self.barber.choices = [(b.id, b.first_name + ' ' + b.last_name) for b in User.query.filter_by(role_id=2)]
+  		self.service.choices = [(s.id, s.name) for s in Service.query.order_by(Service.name)]
 
 #This is the form that will handle user additions by the admins.
 class AddUserForm(FlaskForm):
