@@ -96,7 +96,7 @@ def logout():
     Log an user out through the logout link
     """
     logout_user()
-    flash('You have successfully been logged out.')
+    flash('You have successfully been logged out.', 'info')
 
     # redirect to the login page
     return redirect(url_for('home.index'))

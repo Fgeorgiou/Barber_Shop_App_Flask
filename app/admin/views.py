@@ -130,14 +130,14 @@ def add_appointment():
 					return newtime.strftime('%H:%M')
 
 				#calculate the appointment cost based on the user's selection
-				# service_to_evaluate = Service.query.filter_by(id=appointment_form.service.data).first()
-				# service_cost = service_to_evaluate.id
+				service_to_evaluate = Service.query.filter_by(id=add_appointment_form.service.data).first()
+				service_cost = service_to_evaluate.cost
 
 				#Database query for appointment
 				appointment = Appointment(appointment_date = add_appointment_form.appointment_date.data,
 					appointment_start_time = add_appointment_form.appointment_time.data,
 					appointment_end_time = nextTime(time_string, 30),
-					#appointment_cost = service_cost,
+					appointment_cost = service_cost,
 					customer_id = add_appointment_form.customer.data,
 					barber_id = add_appointment_form.barber.data,
 					service_id = add_appointment_form.service.data,
@@ -261,8 +261,9 @@ def admin_interface():
 	#Query for collecting the appointments in descending order
 	appointments_result = Appointment.query.all()
 	#Query for getting the appointments with a date of today and a time later than now
-	upcoming_appointments = db.session.query(Appointment).filter(and_(Appointment.appointment_date == today.strftime('%m/%d/%Y')
-														,Appointment.appointment_start_time > datetime.now().time().strftime('%H:%M')))
+	upcoming_appointments = db.session.query(Appointment).filter(and_(Appointment.appointment_date >= today.strftime('%m/%d/%Y'),
+														Appointment.appointment_start_time > datetime.now().time().strftime('%H:%M'),
+														Appointment.attendance == "Pending"))
 
 	appointments_formatted = Appointment.query.join(User, Appointment.customer_id == User.id)
 

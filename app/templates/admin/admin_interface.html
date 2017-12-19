@@ -113,7 +113,7 @@ $.fn.pageMe = function(opts){
         $('#upcoming_appointments_table_body').pageMe({pagerSelector:'#upcoming_appointments_pager',showPrevNext:true,hidePageNumbers:false,perPage:6});
         $('#appointments_history_table_body').pageMe({pagerSelector:'#appointments_history_pager',showPrevNext:true,hidePageNumbers:false,perPage:6});
         $('#users_table_body').pageMe({pagerSelector:'#users_pager',showPrevNext:true,hidePageNumbers:false,perPage:6});
-        $('#servicesTableBody').pageMe({pagerSelector:'#servicesPager',showPrevNext:true,hidePageNumbers:false,perPage:6});
+        $('#services_table_body').pageMe({pagerSelector:'#services_pager',showPrevNext:true,hidePageNumbers:false,perPage:6});
     });
 </script>
 
@@ -154,9 +154,9 @@ $.fn.pageMe = function(opts){
                                 <td> {{up_app.appointment_start_time}} </td>
                                 <td> {{up_app.appointment_end_time}} </td>
                                 <td> {{up_app.appointment_cost}} </td>
-                                <td> {{up_app.customer_id}} </td>
-                                <td> {{up_app.barber_id}} </td>
-                                <td> {{up_app.service_id}} </td>
+                                <td> {{up_app.user_cust.first_name}} {{up_app.user_cust.last_name}}</td>
+                                <td> {{up_app.user_barb.first_name}} {{up_app.user_barb.last_name}}</td>
+                                <td> {{up_app.service.name}} </td>
                             </tr>
                             {% endfor %}
                         {% endif %}
@@ -188,7 +188,6 @@ $.fn.pageMe = function(opts){
                         <th>Barber</th>
                         <th>Service</th>
                         <th>Attendance</th>
-                        <th>Appointment by</th>
                         <th>Appointment Made on</th>
                     </thead>
                     <tbody id="appointments_history_table_body">
@@ -199,10 +198,10 @@ $.fn.pageMe = function(opts){
                                 <td> {{appointment.appointment_start_time}} </td>
                                 <td> {{appointment.appointment_end_time}} </td>
                                 <td> {{appointment.appointment_cost}} </td>
-                                <td> {{appointment.customer_id}} </td>
-                                <td> {{appointment.barber_id}} </td>
-                                <td> {{appointment.service_id}} </td>
-                                <td> {{appointment.attendance}}</td>
+                                <td> {{appointment.user_cust.first_name}} {{appointment.user_cust.last_name}}</td>
+                                <td> {{appointment.user_barb.first_name}} {{appointment.user_barb.last_name}}</td>
+                                <td> {{appointment.service.name}} </td>
+                                <td> {{appointment.attendance}} </td>
                                 <td> {{appointment.timestamp}} </td>
                                 <td>
                                     <button class="btn btn-success btn-xs">
@@ -235,7 +234,6 @@ $.fn.pageMe = function(opts){
                 </div>
 
                 <button id="btn_add_appointment" class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span> Add Appointment</button>
-                <button id="btn_cancel_appointment" class="btn btn-danger"><span class="glyphicon glyphicon-minus-sign"></span> Cancel Appointment</button>
 
                 <!-- The Appointment Management Modal -->
                 <div id="appointment_management_modal" class="modal">
@@ -302,7 +300,7 @@ $.fn.pageMe = function(opts){
                             <td> {{user.birth_date}} </td>
                             <td> {{user.telephone}} </td>
                             <td> {{user.email}} </td>
-                            <td> {{user.role_id}}</td>
+                            <td> {{user.role.role_title}}</td>
                             <td> {{user.is_admin}} </td>
                             <td> {{user.timestamp}} </td>
                             <td>
@@ -393,7 +391,7 @@ $.fn.pageMe = function(opts){
                     <th>Service</th>
                     <th>Cost</th>
                 </thead>
-                <tbody id="servicesTableBody">
+                <tbody id="services_table_body">
                 {% if services %}
                     {% for service in services %}
                     <tr>
@@ -410,7 +408,7 @@ $.fn.pageMe = function(opts){
                 </tbody>
             </table>
             <div class="col-md-12 text-center">
-               <ul class="pagination pagination-lg pager" id="servicesPager"></ul>
+               <ul class="pagination pagination-lg pager" id="services_pager"></ul>
             </div>
             
             <button id="btn_add_service" class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span> Add Services</button>
@@ -479,7 +477,6 @@ var users_modal = document.getElementById('users_modal');
 
 // Get the button that opens the modals
 var btn_add_appointment = document.getElementById("btn_add_appointment");
-var btn_cancel_appointment = document.getElementById("btn_cancel_appointment");
 var btn_add_user = document.getElementById("btn_add_user");
 var btn_add_service = document.getElementById("btn_add_service");
 
@@ -492,9 +489,6 @@ var add_service_form = document.getElementById("add_service_form");
 
 // When the user clicks on the button, open the modals
 btn_add_appointment.onclick = function() {
-    appointment_management_modal.style.display = "block";
-}
-btn_cancel_appointment.onclick = function() {
     appointment_management_modal.style.display = "block";
 }
 btn_add_user.onclick = function(){

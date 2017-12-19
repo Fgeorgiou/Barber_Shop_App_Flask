@@ -19,6 +19,8 @@ class User(UserMixin, db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), default=1)
     is_admin = db.Column(db.Boolean, default=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    appointment_customer = db.relationship('Appointment', foreign_keys='Appointment.customer_id', backref='user_cust', lazy='dynamic')
+    appointment_barber = db.relationship('Appointment', foreign_keys='Appointment.barber_id', backref='user_barb', lazy='dynamic')
 
     @property
     def password(self):
@@ -54,11 +56,10 @@ class Role(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     role_title = db.Column(db.String(20), unique=True)
-    users = db.relationship('User', backref='role',
-                                lazy='dynamic')
+    users = db.relationship('User', backref='role', lazy='dynamic')
 
     def __repr__(self):
-        return '<Role: {}>'.format(self.name)
+        return '<Role: {}>'.format(self.role_title)
 
 
 class Service(db.Model):
@@ -69,8 +70,7 @@ class Service(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), unique=True)
     cost = db.Column(db.String(20))
-    appointments = db.relationship('Appointment', backref='service',
-                            lazy='dynamic')
+    appointments = db.relationship('Appointment', backref='service', lazy='dynamic')
 
     def __repr__(self):
         return '<Service: {}>'.format(self.name)

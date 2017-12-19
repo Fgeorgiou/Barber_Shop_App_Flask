@@ -1,0 +1,226 @@
+{% extends 'base_template.html' %}
+{% block content %}
+
+<!-- This page acts as the personal profil of any every individual, registered to this app -->
+<!-- Here users can track their active reservations, edit their personal data at will(Note: for better acknowledgement of users, a log file should be made tracking those changes)-->
+<script>
+// Reference: http://www.bootply.com/lxa0FF9yhw
+//script tha will make a pagination for the tables used in the curent page
+$.fn.pageMe = function(opts){
+    var $this = this,
+        defaults = {
+            perPage: 7,
+            showPrevNext: false,
+            hidePageNumbers: false
+        },
+        settings = $.extend(defaults, opts);
+
+    var listElement = $this;
+    var perPage = settings.perPage; 
+    var children = listElement.children();
+    var pager = $('.pager');
+
+    if (typeof settings.childSelector!="undefined") {
+        children = listElement.find(settings.childSelector);
+    }
+
+    if (typeof settings.pagerSelector!="undefined") {
+        pager = $(settings.pagerSelector);
+    }
+
+    var numItems = children.length;
+    var numPages = Math.ceil(numItems/perPage);
+
+    pager.data("curr",0);
+
+    if (settings.showPrevNext){
+        $('<li><a href="#" class="prev_link">«</a></li>').appendTo(pager);
+    }
+
+    var curr = 0;
+    while(numPages > curr && (settings.hidePageNumbers==false)){
+        $('<li><a href="#" class="page_link">'+(curr+1)+'</a></li>').appendTo(pager);
+        curr++;
+    }
+
+    if (settings.showPrevNext){
+        $('<li><a href="#" class="next_link">»</a></li>').appendTo(pager);
+    }
+
+    pager.find('.page_link:first').addClass('active');
+    pager.find('.prev_link').hide();
+    if (numPages<=1) {
+        pager.find('.next_link').hide();
+    }
+        pager.children().eq(1).addClass("active");
+
+    children.hide();
+    children.slice(0, perPage).show();
+
+    pager.find('li .page_link').click(function(){
+        var clickedPage = $(this).html().valueOf()-1;
+        goTo(clickedPage,perPage);
+        return false;
+    });
+    pager.find('li .prev_link').click(function(){
+        previous();
+        return false;
+    });
+    pager.find('li .next_link').click(function(){
+        next();
+        return false;
+    });
+
+    function previous(){
+        var goToPage = parseInt(pager.data("curr")) - 1;
+        goTo(goToPage);
+    }
+
+    function next(){
+        goToPage = parseInt(pager.data("curr")) + 1;
+        goTo(goToPage);
+    }
+
+    function goTo(page){
+        var startAt = page * perPage,
+            endOn = startAt + perPage;
+
+        children.css('display','none').slice(startAt, endOn).show();
+
+        if (page>=1) {
+            pager.find('.prev_link').show();
+        }
+        else {
+            pager.find('.prev_link').hide();
+        }
+
+        if (page<(numPages-1)) {
+            pager.find('.next_link').show();
+        }
+        else {
+            pager.find('.next_link').hide();
+        }
+
+        pager.data("curr",page);
+        pager.children().removeClass("active");
+        pager.children().eq(page+1).addClass("active");
+
+    }
+};
+
+    //setting the per page elements on each table
+    $(document).ready(function(){
+        $('#user_appointment_history_table_body').pageMe({pagerSelector:'#user_appointment_history_pager',showPrevNext:true,hidePageNumbers:false,perPage:6});
+    });
+</script>
+<!-- Content -->
+<!-- Personal Info -->
+<div class="container-default" style="margin-bottom: 75px;">
+    <div class="col-md-6">
+        <div class="wrapper3">
+            <h2 class="text-center">Personal Information</h2>
+            <hr>
+            <ul class="list-group">
+                <li class="list-group-item">Email: <span class="label label-default pull-right">{{current_user.email}}<a href={{ url_for('reg_user.edit_email') }}> edit<span class="glyphicon glyphicon-edit"></span></a></li><br>
+                <li class="list-group-item">First Name: <span class="label label-default pull-right">{{current_user.first_name}}<a href={{ url_for('reg_user.edit_first_name') }}> edit<span class="glyphicon glyphicon-edit"></span></a></li><br>
+                <li class="list-group-item">Last Name: <span class="label label-default pull-right">{{current_user.last_name}}<a href={{ url_for('reg_user.edit_last_name') }}> edit<span class="glyphicon glyphicon-edit"></span></a></li><br>
+                <li class="list-group-item">Telephone: <span class="label label-default pull-right">{{current_user.telephone}}<a href={{ url_for('reg_user.edit_telephone') }}> edit<span class="glyphicon glyphicon-edit"></span></a></li><br>
+                <li class="list-group-item">Password: <span class="label label-default pull-right">***********<a href={{ url_for('reg_user.edit_password') }}> edit<span class="glyphicon glyphicon-edit"></span></a></li><br>
+            </ul>  
+        </div>     
+    </div>
+    <!-- End of Personal Info -->
+    
+    <!-- Start of Active Reservation -->
+    <div class="col-md-6">
+        <div class="wrapper3">
+            <h2 class="text-center">Active Appointment</h2>
+            <hr>
+            <ul class="list-group">
+                {% if current_appointment %}
+                    <li class="list-group-item">Appointment Date: <span class="label label-default pull-right">{{current_appointment.appointment_date}}</span></li>
+                    <li class="list-group-item">Arrival: <span class="label label-default pull-right">{{current_appointment.appointment_start_time}}</span></li>
+                    <li class="list-group-item">Departure: <span class="label label-default pull-right">{{current_appointment.appointment_end_time}}</span></li>
+                    <li class="list-group-item">Barber: <span class="label label-default pull-right">{{current_appointment.user_barb.first_name}} {{current_appointment.user_barb.last_name}}</span></li>
+                    <li class="list-group-item">Service: <span class="label label-default pull-right">{{current_appointment.service.name}}</span></li>
+
+                    <center>
+                        <button class="btn btn-primary btn-xs">
+                            <a style="text-decoration: none; color: #fff;" href={{ url_for('reg_user.cancel_appointment')}}>Cancel Appointment</a>
+                        </button>
+                    </center>
+                {% else %}
+                    <br><br><br><br><br>
+                        <center>There is no active reservation</center><br>
+                    <br><br><br><br><br>
+                    <center>
+                        <button class="btn btn-success btn-xl">
+                            <a style="text-decoration: none; color: #fff;" href={{ url_for('reg_user.appointments')}}>Make Appointment</a>
+                        </button>
+                    </center>
+                {% endif %}
+            </ul>
+        </div>    
+    </div>   
+</div>
+
+<!--Start of Reservation History -->
+    <div class="col-md-0" style="margin-top: 15px;"></div>
+    <div class="col-md-12" style="margin-top: 15px;">
+        <div class="wrapper4">
+            <h2 class="text-center">Appointment History</h2>
+            <hr>
+            <table class="table table-hover">
+                <thead>
+                    <th>Appointment Date</th>
+                    <th>Arrival</th>
+                    <th>Departure</th>
+                    <th>Appointment Cost</th>
+                    <th>Barber</th>
+                    <th>Service</th>
+                    <th>Status</th>
+                </thead>
+                <tbody id="user_appointment_history_table_body"></tbody>
+                    {% if appointment_history %}
+                        {% for appointment in appointment_history %}
+                            <tr>
+                                <td>{{appointment.appointment_date}}</td>
+                                <td>{{appointment.appointment_start_time}}</td>
+                                <td>{{appointment.appointment_end_time}}</td>
+                                <td>{{appointment.appointment_cost}}</td>
+                                <td>{{appointment.user_barb.first_name}} {{appointment.user_barb.last_name}}</td>
+                                <td>{{appointment.service.name}}</td>
+                                <td>{{appointment.attendance}}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+            <div class="col-md-12 text-center">
+                <ul class="pagination pagination-lg pager" id="user_appointment_history_pager"></ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-0" style="margin-top: 15px;"></div>   
+<!-- End of content-->
+<!-- This is the Jinja template using WTForms to determine if the action was successful or not and adapt the layout of the response respectively-->
+{% with successes = get_flashed_messages(category_filter=["info"]) %}
+    {% if successes %}
+        {% for message in successes %}
+            <div class="alert alert-success flash">
+                {{message}}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+{% with errors = get_flashed_messages(category_filter=["error"]) %}
+    {% if errors %}
+        {% for message in errors %}
+            <div class="alert alert-danger flash">
+                {{message}}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+{% endblock %}

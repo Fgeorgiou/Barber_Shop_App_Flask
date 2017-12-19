@@ -1,0 +1,71 @@
+{% extends 'base_template.html' %}
+{% block content %}
+<!--The page that will contain the form needed to make a reservation -->
+<!--For better functionality some content is hidden from simple users, that the admin will use to make some extra information in a reservation entry -->
+<!-- Content -->
+<div class="container">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <div class="alert alert-danger text-centered" style="display: none">
+            Please remember that you need to be logged in to make a reservation.
+        </div>
+        <div class="alert alert-warning text-centered" style="display: none">
+            You have an active reservation. If you want to make a new one, please, <a href="{{url_for("reg_user.my_account")}}">cancel</a> the current one or contact us at 123.456.7890!
+        </div>
+    </div>
+    <div class="col-md-2"></div>
+</div>
+
+<div class="col-md-2"></div>
+<div class="col-md-8">
+    <div class="wrapper3">
+        <form action="{{ url_for('reg_user.appointments') }}" method="post">
+            {{ appointment_form.hidden_tag() }}
+
+            <div class="form-group">
+                <label><span class="glyphicon glyphicon-calendar"></span><b>{{ appointment_form.appointment_date.label }}</b></label>
+                {{appointment_form.appointment_date(class="form-control",type="text", id="datepicker", placeholder="Click to pick the appointment date")}}
+            </div>
+            <div class="form-group">
+                <label><span class="glyphicon glyphicon-time"></span><b>{{ appointment_form.appointment_time.label }}</b></label>
+                {{appointment_form.appointment_time(class="form-control",type="text", id="timepicker", placeholder="Click to pick the appointment time")}}
+            </div>
+            <div class="form-group">
+                <label><span class="glyphicon glyphicon-user"></span><b>{{ appointment_form.barber.label }}</b></label><br>
+                {{appointment_form.barber(class="form-control")}}
+            </div>
+            <div class="form-group">
+                <label><span class="glyphicon glyphicon-scissors"></span><b>{{ appointment_form.service.label }}</b></label>
+                {{appointment_form.service(class="form-control")}}
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+    </div>        
+</div>
+<div class="col-md-2"></div>   
+
+<!-- This is the Jinja template using WTForms to determine if the action was successful or not and adapt the layout of the response respectively-->
+{% with successes = get_flashed_messages(category_filter=["info"]) %}
+    {% if successes %}
+        {% for message in successes %}
+            <div class="alert alert-success flash">
+                {{message}}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+{% with errors = get_flashed_messages(category_filter=["error"]) %}
+    {% if errors %}
+        {% for message in errors %}
+            <div class="alert alert-danger flash">
+                {{message}}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+        
+<!-- End of content-->
+<script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+{%include 'footer2.html'%}
+{%endblock%}

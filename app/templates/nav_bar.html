@@ -13,7 +13,7 @@
                 </div>
                 <div class="collapse navbar-collapse" id="myNavbar">
                     <ul class="nav navbar-nav">
-                        <li><a href="{{ url_for('home.appointments') }}">Appointments</a></li>
+                        <li><a href="{{ url_for('reg_user.appointments') }}">Appointments</a></li>
                         <li><a href="{{ url_for('home.contact') }}">Contact</a></li>
                         <li><a href="{{ url_for('home.about_us') }}">About Us</a></li>
                     </ul>   
@@ -27,7 +27,7 @@
                                 {% if current_user.is_admin %}
                                     <li><a href="{{ url_for('admin.admin_interface') }}"><span class="glyphicon glyphicon-king"></span> Admin Interface</a></li>
                                 {% else %}
-                                    <li><a href="{{ url_for('home.my_account') }}"><span class="glyphicon glyphicon-user"></span> MyAccount</a></li>
+                                    <li><a href="{{ url_for('reg_user.my_account') }}"><span class="glyphicon glyphicon-user"></span> MyAccount</a></li>
                                 {% endif %}
                             <li><a href="{{ url_for('auth.logout') }}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
                             {% else %}

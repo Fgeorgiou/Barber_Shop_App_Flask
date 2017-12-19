@@ -118,7 +118,7 @@
                     <hr>
                     <div class="banner-bdy">By scheduling online your appointment you get a <b>10% discount</b>!!</div>
                     <div style="position: absolute; bottom: 1%; left: 0; right: 0; margin-left: auto; margin-right: auto;">
-                        <button type="button" class="btn btn-danger center-block"><a href="{{ url_for('home.appointments') }}" style="text-decoration: none; color:inherit;">Schedule Now !!</a></button>
+                        <button type="button" class="btn btn-danger center-block"><a href="{{ url_for('reg_user.appointments') }}" style="text-decoration: none; color:inherit;">Schedule Now !!</a></button>
                     </div>
                 </div> 
             </div>
@@ -133,7 +133,7 @@
                     <hr>
                     <div class="banner-bdy">Get your<br> soon to be little men for a haircut<br> and get 20% on the total cost!!</div>
                     <div style="position: absolute; bottom: 1%; left: 0; right: 0; margin-left: auto; margin-right: auto;">
-                        <button type="button" class="btn btn-danger center-block"><a href="{{ url_for('home.appointments') }}" style="text-decoration: none; color:inherit;">Schedule Now !!</a></button>
+                        <button type="button" class="btn btn-danger center-block"><a href="{{ url_for('reg_user.appointments') }}" style="text-decoration: none; color:inherit;">Schedule Now !!</a></button>
                     </div>
                 </div> 
             </div>
@@ -148,13 +148,20 @@
                     <hr>
                     <div class="banner-bdy">Make a full face repair appointment and <i><b>Trimming</b></i> is on the house!!</div>
                     <div style="position: absolute; bottom: 1%; left: 0; right: 0; margin-left: auto; margin-right: auto;">
-                        <button type="button" class="btn btn-danger center-block"><a href="{{ url_for('home.appointments') }}" style="text-decoration: none; color:inherit;">Schedule Now !!</a></button>
+                        <button type="button" class="btn btn-danger center-block"><a href="{{ url_for('reg_user.appointments') }}" style="text-decoration: none; color:inherit;">Schedule Now !!</a></button>
                     </div>
                 </div> 
             </div>
             <div class="col-md-0"></div>
         </div>
     </div>  
+
+{% for message in get_flashed_messages() %}
+    <div class="alert alert-danger flash">
+        {{message}}
+    </div>
+{% endfor %}
+
 {%include 'footer.html'%} 
 {%endblock%}
 
