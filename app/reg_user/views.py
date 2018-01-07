@@ -7,7 +7,7 @@ from . import reg_user
 from ..models import *
 
 #global variables
-company_name = {'name' : 'LaKosta'}
+company_name = {'name' : 'LaBarberia'}
 year = datetime.now().year
 month = datetime.now().month
 day = datetime.now().day
@@ -21,7 +21,21 @@ def flash_errors(form):
 @login_required
 def appointments():
   appointment_form = UserAppointmentForm()
+
+  #Setting today's info
+  today = datetime(year, month, day)
+  #Querying for a current appointment
+  current_appointment = db.session.query(Appointment).filter(and_(Appointment.appointment_date >= today.strftime('%m/%d/%Y'),
+                                      Appointment.appointment_start_time > datetime.now().time().strftime('%H:%M'),
+                                      Appointment.customer_id == current_user.id,
+                                      Appointment.attendance == "Pending")).first()
   
+  #Querying for any pending appointments with the selected barber and time of the user
+  existing_appointment = db.session.query(Appointment).filter(and_(Appointment.appointment_date == appointment_form.appointment_date.data,
+                                      Appointment.appointment_start_time == appointment_form.appointment_time.data,
+                                      Appointment.barber_id == appointment_form.barber.data,
+                                      Appointment.attendance == "Pending")).first()
+
   if request.method == 'POST':
     if appointment_form.validate_on_submit():
       '''
@@ -29,6 +43,7 @@ def appointments():
       a. Cant make an appointment on any day before today
       b. Cant make an appointment on a time before now
       c. User cant have more than 1 active appointment to avoid intentional system overload
+      d. An appointment cant be scheduled on a time that is already taken. A suggestion of another time or barber will be made
       '''
       #time variables neccesary for calculating appointment credibility
       today = datetime(year, month, day)
@@ -40,6 +55,10 @@ def appointments():
       #Criteria b check
       elif appointment_form.appointment_date.data == today.strftime('%m/%d/%Y') and time_string < datetime.now().time().strftime('%H:%M'):
         flash ("Appointment can't be scheduled for a time sooner than now! - Current Time: " + datetime.now().time().strftime('%H:%M'), 'error')
+      elif current_appointment is not None:
+        flash ("You already have an active appointment. Please cancel it or contact the shop to schedule another.", 'error')
+      elif existing_appointment is not None:
+        flash ("There is another appointment at that time. Sorry for the inconvenience, try picking another time or barber.", 'error')
       else:
         #Time calculation function for appointment's end
         def nextTime(time, minutestoadd):
@@ -50,7 +69,8 @@ def appointments():
 
         #calculate the appointment cost based on the user's selection
         service_to_evaluate = Service.query.filter_by(id=appointment_form.service.data).first()
-        service_cost = service_to_evaluate.cost
+        service_discount = int(service_to_evaluate.cost) - (int(service_to_evaluate.cost) / 10)
+        service_cost = str(service_discount)
 
         #Database query for appointment
         appointment = Appointment(appointment_date = appointment_form.appointment_date.data,
@@ -76,20 +96,22 @@ def appointments():
                            title='Appointments',
                            company_name=company_name,
                            year=year,
-                           appointment_form=appointment_form)
+                           appointment_form=appointment_form,
+                           current_appointment=current_appointment)
 
 @reg_user.route('/my_account')
 @login_required
 def my_account():
 
+  #Setting today's info
   today = datetime(year, month, day)
-
+  #Querying for a current appointment
   current_appointment = db.session.query(Appointment).filter(and_(Appointment.appointment_date >= today.strftime('%m/%d/%Y'),
                                         Appointment.appointment_start_time > datetime.now().time().strftime('%H:%M'),
                                         Appointment.customer_id == current_user.id,
                                         Appointment.attendance == "Pending")).first()
 
-
+  #Querying for the appointment history of the user
   appointment_history = Appointment.query.filter(Appointment.customer_id == current_user.id).order_by(Appointment.appointment_date.desc(), Appointment.appointment_start_time.desc())
 
   return render_template("reg_user/my_account.html",

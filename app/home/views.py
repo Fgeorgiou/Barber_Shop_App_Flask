@@ -7,7 +7,7 @@ from . import home
 from ..models import *
 
 #global variables
-company_name = {'name' : 'LaKosta'}
+company_name = {'name' : 'LaBarberia'}
 year = datetime.now().year
 month = datetime.now().month
 day = datetime.now().day
@@ -20,10 +20,15 @@ def flash_errors(form):
 @home.route('/')
 @home.route('/index')
 def index():
-    return render_template("home/index.html",
-                           title='Home',
-                           company_name=company_name,
-                           year=year)
+
+  #Query for collecting the services
+  services_list = db.session.query(Service).order_by(Service.name)
+
+  return render_template("home/index.html",
+                         title='Home',
+                         company_name=company_name,
+                         year=year,
+                         services_list=services_list)
 
 @home.route('/about_us')
 def about_us():
@@ -38,15 +43,19 @@ def contact():
 
     if request.method == 'POST':
       if form.validate() == False:
-        flash('All fields are required.')
+        flash('All fields are required.', 'error')
         return render_template('home/contact.html',
                            title='Contact',
                            company_name=company_name,
                            year=year,
                            form=form)
       else:
-        return 'Form posted.'
-
+        flash('Mail Sent. Thanks for your time!', 'info')
+        return render_template('home/contact.html',
+                   title='Contact',
+                   company_name=company_name,
+                   year=year,
+                   form=form)
     elif request.method == 'GET':
       return render_template("home/contact.html",
                            title='Contact',

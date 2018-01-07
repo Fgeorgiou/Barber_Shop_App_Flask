@@ -143,15 +143,15 @@ $.fn.pageMe = function(opts){
                     <li class="list-group-item">Departure: <span class="label label-default pull-right">{{current_appointment.appointment_end_time}}</span></li>
                     <li class="list-group-item">Barber: <span class="label label-default pull-right">{{current_appointment.user_barb.first_name}} {{current_appointment.user_barb.last_name}}</span></li>
                     <li class="list-group-item">Service: <span class="label label-default pull-right">{{current_appointment.service.name}}</span></li>
-
+                    <br><br><br><br>
                     <center>
-                        <button class="btn btn-primary btn-xs">
+                        <button class="btn btn-primary">
                             <a style="text-decoration: none; color: #fff;" href={{ url_for('reg_user.cancel_appointment')}}>Cancel Appointment</a>
                         </button>
                     </center>
                 {% else %}
                     <br><br><br><br><br>
-                        <center>There is no active reservation</center><br>
+                        <center>There is no active appointment.</center><br>
                     <br><br><br><br><br>
                     <center>
                         <button class="btn btn-success btn-xl">
@@ -203,24 +203,4 @@ $.fn.pageMe = function(opts){
     </div>
     <div class="col-md-0" style="margin-top: 15px;"></div>   
 <!-- End of content-->
-<!-- This is the Jinja template using WTForms to determine if the action was successful or not and adapt the layout of the response respectively-->
-{% with successes = get_flashed_messages(category_filter=["info"]) %}
-    {% if successes %}
-        {% for message in successes %}
-            <div class="alert alert-success flash">
-                {{message}}
-            </div>
-        {% endfor %}
-    {% endif %}
-{% endwith %}
-
-{% with errors = get_flashed_messages(category_filter=["error"]) %}
-    {% if errors %}
-        {% for message in errors %}
-            <div class="alert alert-danger flash">
-                {{message}}
-            </div>
-        {% endfor %}
-    {% endif %}
-{% endwith %}
 {% endblock %}

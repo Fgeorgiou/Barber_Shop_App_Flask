@@ -330,7 +330,7 @@ $.fn.pageMe = function(opts){
                 <div class="modal-content">
                     <span class="close">&times;</span>
                     <!--Add service form-->
-                    <form class="form-horizontal" action="{{ url_for('admin.add_user') }}" method="POST" id="add_user_form">
+                    <form class="form-horizontal" action="{{ url_for('admin.add_user') }}" method="post" id="add_user_form">
                         <h3><b><center>Add User<center></b></h3>
                             {{ add_user_form.hidden_tag() }}
                             <div class="form-group">
@@ -445,27 +445,6 @@ $.fn.pageMe = function(opts){
     <!-- End of Services tab--> 
 </div>
 <!-- End of tab-content div-->
-
-<!-- This is the Jinja template using WTForms to determine if the action was successful or not and adapt the layout of the response respectively-->
-{% with successes = get_flashed_messages(category_filter=["info"]) %}
-    {% if successes %}
-        {% for message in successes %}
-            <div class="alert alert-success flash">
-                {{message}}
-            </div>
-        {% endfor %}
-    {% endif %}
-{% endwith %}
-
-{% with errors = get_flashed_messages(category_filter=["error"]) %}
-    {% if errors %}
-        {% for message in errors %}
-            <div class="alert alert-danger flash">
-                {{message}}
-            </div>
-        {% endfor %}
-    {% endif %}
-{% endwith %}
 
 <script>
 //This modals are used to collect the necesary information from the user in order to make some changes to data like reervations or tables

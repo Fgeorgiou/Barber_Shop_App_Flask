@@ -9,10 +9,15 @@ from .. import db
 from ..models import *
 
 #global variables
-company_name = {'name' : 'LaKosta'}
+company_name = {'name' : 'LaBarberia'}
 year = datetime.now().year
 month = datetime.now().month
 day = datetime.now().day
+
+def flash_errors(form):
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash(u"Error in the %s field - %s" % (getattr(form, field).label.text, error), 'error')
 
 def check_admin():
 	"""
@@ -32,9 +37,9 @@ def add_service():
 	add_service_form = AddServiceForm()
 
 	if request.method == 'POST':
-		if add_service_form.validate_on_submit():
+		if add_service_form.validate():
 			service_to_add = Service(name=add_service_form.name.data.capitalize(),
-							cost=add_service_form.cost.data)
+									cost=add_service_form.cost.data)
 			try:
 				# add service to the database
 				db.session.add(service_to_add)
@@ -42,14 +47,17 @@ def add_service():
 				flash('You have successfully added a new service.', 'info')
 			except:
 				# in case service name already exists
-				flash('Error: service name already exists.', 'error')
+				flash('Service name already exists.', 'error')
 
+			return redirect(url_for('admin.admin_interface'))
+		else:
+			flash('Form data is not validate. Please check all the fields', 'error')
 			return redirect(url_for('admin.admin_interface'))
 
 	return render_template('admin/admin_interface.html',
-								add_service_form=add_service_form,
-								add_user_form=AddUserForm(),
-								add_appointment_form=AdminAppointmentForm())
+							add_service_form=add_service_form,
+							add_user_form=AddUserForm(),
+							add_appointment_form=AdminAppointmentForm())
 
 
 @admin.route('/add_user', methods=['GET','POST'])
@@ -60,38 +68,45 @@ def add_user():
 
 	#Instantiating forms
 	add_user_form = AddUserForm()
+	#Querying inserted email address, to search if it exists in the db. If it doesnt, allow the user to create the account
+	email_exists = User.query.filter_by(email=add_user_form.email.data).first()
 
 	if request.method == 'POST':
 		if add_user_form.validate_on_submit():
-			is_admin_val = None
+			if email_exists is None:
+				is_admin_val = None
 
-			if add_user_form.is_admin.data == 'True':
-				is_admin_val = True
-			else:
-				is_admin_val = False
-			user_to_add = User(first_name=add_user_form.first_name.data.capitalize(),
-                        	last_name=add_user_form.last_name.data.capitalize(),
-                        	birth_date=add_user_form.birth_date.data,
-                       		email=add_user_form.email.data,
-                        	telephone=add_user_form.telephone.data,
-                        	password=add_user_form.password.data,
-                        	role_id=add_user_form.role_id.data,
-                        	is_admin=is_admin_val)
-			try:
-				# add service to the database
+				if add_user_form.is_admin.data == 'True':
+					is_admin_val = True
+				else:
+					is_admin_val = False
+
+				user_to_add = User(first_name=add_user_form.first_name.data.capitalize(),
+									last_name=add_user_form.last_name.data.capitalize(),
+									birth_date=add_user_form.birth_date.data,
+									email=add_user_form.email.data,
+									telephone=add_user_form.telephone.data,
+									password=add_user_form.password.data,
+									role_id=add_user_form.role_id.data,
+									is_admin=is_admin_val)
+					
+				# add user to the database
 				db.session.add(user_to_add)
 				db.session.commit()
 				flash('You have successfully added a new user!', 'info')
-			except:
-				# in case user already exists
-				flash('Error: user already exists.', 'error')
 
+			return redirect(url_for('admin.admin_interface'))
+		else:
+			if email_exists is not None:
+				flash('User already exists.', 'error')
+			else:
+				flash('Form data is not validate. Please check all the fields', 'error')
 			return redirect(url_for('admin.admin_interface'))
 
 	return render_template('admin/admin_interface.html',
-								add_user_form=add_user_form,
-								add_service_form=AddServiceForm(),
-								add_appointment_form=AdminAppointmentForm())
+							add_user_form=add_user_form,
+							add_service_form=AddServiceForm(),
+							add_appointment_form=AdminAppointmentForm())
 
 
 @admin.route('/add_appointment', methods=['GET','POST'])
@@ -102,6 +117,12 @@ def add_appointment():
 
 	#Instantiating forms
 	add_appointment_form = AdminAppointmentForm()
+
+	#Querying for any pending appointments with the selected barber and time of the user
+	existing_appointment = db.session.query(Appointment).filter(and_(Appointment.appointment_date == add_appointment_form.appointment_date.data,
+																	Appointment.appointment_start_time == add_appointment_form.appointment_time.data,
+																	Appointment.barber_id == add_appointment_form.barber.data,
+																	Appointment.attendance == "Pending")).first()
 
 	if request.method == 'POST':
 		if add_appointment_form.validate_on_submit():
@@ -121,6 +142,8 @@ def add_appointment():
 			#Criteria b check
 			elif add_appointment_form.appointment_date.data == today.strftime('%m/%d/%Y') and time_string < datetime.now().time().strftime('%H:%M'):
 				flash ("Appointment can't be scheduled for a time sooner than now! - Current Time: " + datetime.now().time().strftime('%H:%M'), 'error')
+			elif existing_appointment is not None:
+				flash ("There is another appointment at that time. Try picking another time or barber.", 'error')
 			else:
 				#Time calculation function for appointment's end
 				def nextTime(time, minutestoadd):
@@ -151,7 +174,7 @@ def add_appointment():
 				# redirect to the login page
 				return redirect(url_for('admin.admin_interface'))
 		else:
-			flash_errors(appointment_form)
+			flash_errors(add_appointment_form)
 		return redirect(url_for('admin.admin_interface'))
 
 	return render_template("admin/admin_interface.html",

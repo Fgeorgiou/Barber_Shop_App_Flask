@@ -7,7 +7,7 @@ from .. import db
 from ..models import User
 
 #global variables
-company_name = {'name' : 'LaKosta'} # Test
+company_name = {'name' : 'LaBarberia'}
 year = datetime.now().year
 
 def flash_errors(form):
